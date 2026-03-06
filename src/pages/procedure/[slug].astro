@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumb from '../../components/Breadcrumb.jsx';
 import LevelBadge from '../../components/LevelBadge.jsx';
+import ReadingProgress from '../../components/ReadingProgress.jsx';
 import docsData from '../../data/docs.json';
 
 export async function getStaticPaths() {
@@ -35,6 +36,7 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
   description={`${procedure.data.title} - Documentation IT-DOC`}
   currentPath={`/${procedure.data.category}/${procedure.data.subcategory}`}
 >
+  <ReadingProgress client:load />
   <div class="p-6 lg:p-10">
     <div class="max-w-7xl mx-auto">
       <div class="flex gap-10">

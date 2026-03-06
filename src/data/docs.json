@@ -111,7 +111,7 @@
       "label": "Virtualisation",
       "icon": "virtualization",
       "color": "#7B2FBE",
-      "description": "VMware, Hyper-V, Docker, Kubernetes",
+      "description": "VMware, Hyper-V, Docker, Kubernetes, WSL",
       "subcategories": [
         {
           "id": "vmware",
@@ -131,6 +131,11 @@
         {
           "id": "kubernetes",
           "label": "Kubernetes",
+          "procedures": []
+        },
+        {
+          "id": "wsl",
+          "label": "WSL",
           "procedures": []
         }
       ]

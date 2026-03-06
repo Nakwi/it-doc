@@ -1,38 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Fuse from 'fuse.js';
-import docsData from '../data/docs.json';
-
-// Flatten all procedures for search
-const getAllProcedures = () => {
-  const procedures = [];
-  docsData.categories.forEach(category => {
-    category.subcategories.forEach(subcategory => {
-      subcategory.procedures.forEach(procedure => {
-        procedures.push({
-          ...procedure,
-          categoryId: category.id,
-          categoryLabel: category.label,
-          subcategoryId: subcategory.id,
-          subcategoryLabel: subcategory.label,
-          color: category.color
-        });
-      });
-    });
-  });
-  return procedures;
-};
-
-const fuse = new Fuse(getAllProcedures(), {
-  keys: ['title', 'tags', 'categoryLabel', 'subcategoryLabel'],
-  threshold: 0.3,
-  includeScore: true
-});
 
 export default function SearchBar() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef(null);
+
+  // Get procedures from global variable injected by Layout
+  const fuse = useMemo(() => {
+    const procedures = typeof window !== 'undefined' ? window.__PROCEDURES__ || [] : [];
+    return new Fuse(procedures, {
+      keys: ['title', 'tags', 'categoryLabel', 'subcategoryLabel'],
+      threshold: 0.3,
+      includeScore: true
+    });
+  }, []);
 
   useEffect(() => {
     if (query.length > 1) {
@@ -43,7 +26,7 @@ export default function SearchBar() {
       setResults([]);
       setIsOpen(false);
     }
-  }, [query]);
+  }, [query, fuse]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -105,8 +88,8 @@ export default function SearchBar() {
           <div className="max-h-96 overflow-y-auto">
             {results.map((result, index) => (
               <a
-                key={`${result.categoryId}-${result.subcategoryId}-${result.id}`}
-                href={`/${result.categoryId}/${result.subcategoryId}/${result.id}`}
+                key={result.id}
+                href={`/procedure/${result.id}`}
                 className="flex items-start gap-3 p-3 hover:bg-[var(--color-bg-secondary)] transition-colors border-b border-[var(--color-border)] last:border-b-0"
               >
                 <div

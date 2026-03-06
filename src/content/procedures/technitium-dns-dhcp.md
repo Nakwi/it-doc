@@ -5,7 +5,7 @@ subcategory: "services-reseau"
 level: "Intermédiaire"
 duration: 45
 tags: ["Technitium", "DNS", "DHCP", "Debian"]
-cover: "/images/technitium/image-1.png"
+cover: "/images/technitium/technitium_cover.png"
 ---
 
 ## Sommaire

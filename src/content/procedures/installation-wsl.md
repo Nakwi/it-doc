@@ -5,7 +5,7 @@ subcategory: "wsl"
 level: "Débutant"
 duration: 20
 tags: ["WSL", "Windows", "Linux", "Ubuntu", "VS Code"]
-cover: "/images/wsl/screenshot_20260302_141323.jpg"
+cover: "/images/wsl/wsl_cover.png"
 ---
 
 ## Sommaire

@@ -5,7 +5,7 @@ subcategory: "services-reseau"
 level: "Intermédiaire"
 duration: 45
 tags: ["GLPI", "Debian", "Apache", "MariaDB", "PHP"]
-cover: "/images/glpi/17.png"
+cover: "/images/glpi/GLPI_cover.png"
 ---
 
 ## Sommaire

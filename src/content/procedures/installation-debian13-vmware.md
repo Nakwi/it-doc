@@ -5,7 +5,7 @@ subcategory: "vmware"
 level: "Débutant"
 duration: 30
 tags: ["Debian", "VMware", "Installation", "VM"]
-cover: "/images/debian13/debian-01.png"
+cover: "/images/debian13/debianvmware_cover.png"
 ---
 
 ## Sommaire

@@ -1,0 +1,114 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import docsData from '../data/docs.json';
+
+// Get all procedures from Content Collections
+const allProcedures = await getCollection('procedures');
+
+// Count procedures per category
+const getCategoryProcedureCount = (categoryId: string) => {
+  return allProcedures.filter(p => p.data.category === categoryId).length;
+};
+
+// Total procedures and duration
+const totalProcedures = allProcedures.length;
+const totalDuration = allProcedures.reduce((sum, p) => sum + p.data.duration, 0);
+
+const categoryEmojis: Record<string, string> = {
+  'windows-server': '🪟',
+  'linux': '🐧',
+  'reseau': '🌐',
+  'securite': '🔒',
+  'virtualisation': '💻'
+};
+---
+
+<Layout title="Accueil" currentPath="/">
+  <div class="p-6 lg:p-10">
+    <!-- Hero Section -->
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <h1 class="font-display text-4xl lg:text-5xl font-bold text-[var(--color-text-primary)] mb-4">
+        Documentation Technique IT
+      </h1>
+      <p class="text-lg text-[var(--color-text-secondary)]">
+        Procédures claires et structurées pour l'administration systèmes et réseaux (BTS SIO)
+      </p>
+    </div>
+
+    <!-- Categories Grid -->
+    <div class="max-w-6xl mx-auto">
+      <h2 class="font-display text-xl font-semibold text-[var(--color-text-primary)] mb-6">
+        Catégories
+      </h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {docsData.categories.map((category) => {
+          const procedureCount = getCategoryProcedureCount(category.id);
+          return (
+            <a
+              href={`/${category.id}`}
+              class="group block bg-[var(--color-bg-primary)] rounded-xl border border-[var(--color-border)] p-5 card-hover text-center"
+            >
+              <div
+                class="w-14 h-14 mx-auto rounded-xl flex items-center justify-center text-3xl mb-4"
+                style={`background-color: ${category.color}15`}
+              >
+                {categoryEmojis[category.id]}
+              </div>
+              <h3
+                class="font-display font-semibold text-base group-hover:underline mb-2"
+                style={`color: ${category.color}`}
+              >
+                {category.label}
+              </h3>
+              <p class="text-xs text-[var(--color-text-secondary)] line-clamp-2 mb-3">
+                {category.description}
+              </p>
+              <div class="text-xs text-[var(--color-text-secondary)]">
+                {procedureCount} procédure{procedureCount > 1 ? 's' : ''}
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="max-w-6xl mx-auto mt-12">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-[var(--color-bg-secondary)] rounded-xl p-6 text-center">
+          <div class="text-3xl font-bold text-[#0078D4]">
+            {docsData.categories.length}
+          </div>
+          <div class="text-sm text-[var(--color-text-secondary)] mt-1">
+            Catégories
+          </div>
+        </div>
+        <div class="bg-[var(--color-bg-secondary)] rounded-xl p-6 text-center">
+          <div class="text-3xl font-bold text-[#E95420]">
+            {docsData.categories.reduce((sum, cat) => sum + cat.subcategories.length, 0)}
+          </div>
+          <div class="text-sm text-[var(--color-text-secondary)] mt-1">
+            Sous-catégories
+          </div>
+        </div>
+        <div class="bg-[var(--color-bg-secondary)] rounded-xl p-6 text-center">
+          <div class="text-3xl font-bold text-[#00B4D8]">
+            {totalProcedures}
+          </div>
+          <div class="text-sm text-[var(--color-text-secondary)] mt-1">
+            Procédures
+          </div>
+        </div>
+        <div class="bg-[var(--color-bg-secondary)] rounded-xl p-6 text-center">
+          <div class="text-3xl font-bold text-[#7B2FBE]">
+            {Math.round(totalDuration / 60)}h
+          </div>
+          <div class="text-sm text-[var(--color-text-secondary)] mt-1">
+            De contenu
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

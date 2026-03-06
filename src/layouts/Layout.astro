@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import '../styles/global.css';
+import Header from '../components/Header.jsx';
+import Sidebar from '../components/Sidebar.jsx';
+
+interface Props {
+  title: string;
+  description?: string;
+  currentPath?: string;
+  showSidebar?: boolean;
+}
+
+const {
+  title,
+  description = "Documentation technique pour BTS SIO et Bachelor informatique",
+  currentPath = "",
+  showSidebar = true
+} = Astro.props;
+
+// Get procedure counts for sidebar
+const allProcedures = await getCollection('procedures');
+const procedureCounts: Record<string, Record<string, number>> = {};
+
+allProcedures.forEach(p => {
+  if (!procedureCounts[p.data.category]) {
+    procedureCounts[p.data.category] = {};
+  }
+  if (!procedureCounts[p.data.category][p.data.subcategory]) {
+    procedureCounts[p.data.category][p.data.subcategory] = 0;
+  }
+  procedureCounts[p.data.category][p.data.subcategory]++;
+});
+---
+
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title} | IT-DOC</title>
+    <script is:inline>
+      // Check for dark mode preference
+      if (localStorage.getItem('theme') === 'dark' ||
+          (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+  </head>
+  <body class="min-h-screen bg-[var(--color-bg-primary)]">
+    <Header client:load />
+
+    <div class="flex">
+      {showSidebar && <Sidebar currentPath={currentPath} procedureCounts={procedureCounts} client:load />}
+
+      <main class={`flex-1 min-h-[calc(100vh-64px)] ${showSidebar ? '' : ''}`}>
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

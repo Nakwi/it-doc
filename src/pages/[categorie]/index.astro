@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumb from '../../components/Breadcrumb.jsx';
+import docsData from '../../data/docs.json';
+
+// Get all procedures from Content Collections
+const allProcedures = await getCollection('procedures');
+
+export async function getStaticPaths() {
+  const procs = await getCollection('procedures');
+
+  return docsData.categories.map(category => {
+    // Count procedures per subcategory
+    const subcategoryCounts: Record<string, number> = {};
+    procs.forEach(p => {
+      if (p.data.category === category.id) {
+        subcategoryCounts[p.data.subcategory] = (subcategoryCounts[p.data.subcategory] || 0) + 1;
+      }
+    });
+
+    return {
+      params: { categorie: category.id },
+      props: { category, subcategoryCounts }
+    };
+  });
+}
+
+const { categorie } = Astro.params;
+const { category, subcategoryCounts } = Astro.props;
+
+// Count total procedures for this category
+const totalProcedures = Object.values(subcategoryCounts).reduce((sum, count) => sum + count, 0);
+
+const breadcrumbItems = [
+  { label: category.label }
+];
+---
+
+<Layout
+  title={category.label}
+  description={category.description}
+  currentPath={`/${categorie}`}
+>
+  <div class="p-6 lg:p-10">
+    <div class="max-w-4xl mx-auto">
+      <Breadcrumb items={breadcrumbItems} />
+
+      <!-- Category Header -->
+      <div class="mb-8">
+        <h1 class="font-display text-3xl font-bold text-[var(--color-text-primary)] mb-2" style={`color: ${category.color}`}>
+          {category.label}
+        </h1>
+        <p class="text-[var(--color-text-secondary)]">
+          {category.description}
+        </p>
+        <div class="flex items-center gap-4 mt-4 text-sm text-[var(--color-text-secondary)]">
+          <span>{category.subcategories.length} sous-catégories</span>
+          <span>•</span>
+          <span>{totalProcedures} procédure{totalProcedures > 1 ? 's' : ''}</span>
+        </div>
+      </div>
+
+      <!-- Subcategories Grid -->
+      <div class="grid gap-3">
+        {category.subcategories.map(subcategory => {
+          const count = subcategoryCounts[subcategory.id] || 0;
+          return (
+            <a
+              href={`/${category.id}/${subcategory.id}`}
+              class="group flex items-center justify-between bg-[var(--color-bg-primary)] rounded-xl border border-[var(--color-border)] p-5 card-hover"
+            >
+              <div class="flex items-center gap-4">
+                <div
+                  class="w-10 h-10 rounded-lg flex items-center justify-center"
+                  style={`background-color: ${category.color}15`}
+                >
+                  <svg
+                    class="w-5 h-5"
+                    style={`color: ${category.color}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-[var(--color-text-primary)] group-hover:underline">
+                    {subcategory.label}
+                  </h3>
+                  <p class="text-sm text-[var(--color-text-secondary)] mt-0.5">
+                    {count} procédure{count > 1 ? 's' : ''}
+                  </p>
+                </div>
+              </div>
+              <svg
+                class="w-5 h-5 text-[var(--color-text-secondary)] group-hover:translate-x-1 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</Layout>

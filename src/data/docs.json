@@ -1,0 +1,139 @@
+{
+  "categories": [
+    {
+      "id": "windows-server",
+      "label": "Windows Server",
+      "icon": "windows",
+      "color": "#0078D4",
+      "description": "Active Directory, GPO, DNS, DHCP, serveurs de fichiers",
+      "subcategories": [
+        {
+          "id": "active-directory",
+          "label": "Active Directory",
+          "procedures": []
+        },
+        {
+          "id": "gpo",
+          "label": "GPO",
+          "procedures": []
+        },
+        {
+          "id": "dns",
+          "label": "Serveur DNS",
+          "procedures": []
+        },
+        {
+          "id": "dhcp",
+          "label": "Serveur DHCP",
+          "procedures": []
+        },
+        {
+          "id": "serveur-fichiers",
+          "label": "Serveur de fichiers",
+          "procedures": []
+        }
+      ]
+    },
+    {
+      "id": "linux",
+      "label": "Linux",
+      "icon": "linux",
+      "color": "#E95420",
+      "description": "Administration système, scripting bash, services réseau",
+      "subcategories": [
+        {
+          "id": "administration-systeme",
+          "label": "Administration système",
+          "procedures": []
+        },
+        {
+          "id": "scripting-bash",
+          "label": "Scripting Bash",
+          "procedures": []
+        },
+        {
+          "id": "services-reseau",
+          "label": "Services réseau",
+          "procedures": []
+        }
+      ]
+    },
+    {
+      "id": "reseau",
+      "label": "Réseau",
+      "icon": "network",
+      "color": "#00B4D8",
+      "description": "Configuration routeurs, VLANs, protocoles TCP/IP",
+      "subcategories": [
+        {
+          "id": "tcp-ip",
+          "label": "TCP/IP",
+          "procedures": []
+        },
+        {
+          "id": "surveillance-reseau",
+          "label": "Surveillance réseau",
+          "procedures": []
+        }
+      ]
+    },
+    {
+      "id": "securite",
+      "label": "Sécurité",
+      "icon": "security",
+      "color": "#E63946",
+      "description": "Pare-feu, VPN, authentification, chiffrement",
+      "subcategories": [
+        {
+          "id": "pare-feu",
+          "label": "Pare-feu",
+          "procedures": []
+        },
+        {
+          "id": "vpn",
+          "label": "VPN",
+          "procedures": []
+        },
+        {
+          "id": "authentification",
+          "label": "Authentification",
+          "procedures": []
+        },
+        {
+          "id": "chiffrement",
+          "label": "Chiffrement",
+          "procedures": []
+        }
+      ]
+    },
+    {
+      "id": "virtualisation",
+      "label": "Virtualisation",
+      "icon": "virtualization",
+      "color": "#7B2FBE",
+      "description": "VMware, Hyper-V, Docker, Kubernetes",
+      "subcategories": [
+        {
+          "id": "vmware",
+          "label": "VMware",
+          "procedures": []
+        },
+        {
+          "id": "hyper-v",
+          "label": "Hyper-V",
+          "procedures": []
+        },
+        {
+          "id": "docker",
+          "label": "Docker",
+          "procedures": []
+        },
+        {
+          "id": "kubernetes",
+          "label": "Kubernetes",
+          "procedures": []
+        }
+      ]
+    }
+  ]
+}

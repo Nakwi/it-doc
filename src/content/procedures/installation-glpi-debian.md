@@ -1,7 +1,7 @@
 ---
 title: "Installer GLPI sur Debian"
 category: "linux"
-subcategory: "services-reseau"
+subcategory: "outils-it"
 level: "Intermédiaire"
 duration: 45
 tags: ["GLPI", "Debian", "Apache", "MariaDB", "PHP"]

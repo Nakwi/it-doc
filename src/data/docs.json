@@ -39,7 +39,7 @@
       "label": "Linux",
       "icon": "linux",
       "color": "#E95420",
-      "description": "Administration système, scripting bash, services réseau",
+      "description": "Administration système, scripting bash, services réseau, outils IT",
       "subcategories": [
         {
           "id": "administration-systeme",
@@ -54,6 +54,11 @@
         {
           "id": "services-reseau",
           "label": "Services réseau",
+          "procedures": []
+        },
+        {
+          "id": "outils-it",
+          "label": "Outils IT",
           "procedures": []
         }
       ]

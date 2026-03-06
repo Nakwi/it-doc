@@ -1,14 +1,23 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import LevelBadge from '../components/LevelBadge.jsx';
 import docsData from '../data/docs.json';
 
 // Get all procedures from Content Collections
 const allProcedures = await getCollection('procedures');
 
+// Sort by filename (newest first) - assuming newer files have later names or we use the array order
+const recentProcedures = allProcedures.slice(-4).reverse();
+
 // Count procedures per category
 const getCategoryProcedureCount = (categoryId: string) => {
   return allProcedures.filter(p => p.data.category === categoryId).length;
+};
+
+// Get category info
+const getCategoryInfo = (categoryId: string) => {
+  return docsData.categories.find(c => c.id === categoryId);
 };
 
 // Total procedures and duration
@@ -28,18 +37,106 @@ const categoryEmojis: Record<string, string> = {
   <div class="p-6 lg:p-10">
     <!-- Hero Section -->
     <div class="text-center max-w-3xl mx-auto mb-12">
+      <div class="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-secondary)] rounded-full text-sm text-[var(--color-text-secondary)] mb-6">
+        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+        {totalProcedures} procédures disponibles
+      </div>
       <h1 class="font-display text-4xl lg:text-5xl font-bold text-[var(--color-text-primary)] mb-4">
         Documentation Technique IT
       </h1>
-      <p class="text-lg text-[var(--color-text-secondary)]">
-        Procédures claires et structurées pour l'administration systèmes et réseaux (BTS SIO)
+      <p class="text-lg text-[var(--color-text-secondary)] mb-8">
+        Procédures claires et structurées pour l'administration systèmes et réseaux.<br/>
+        <span class="text-[var(--color-text-primary)] font-medium">Par des étudiants, pour des étudiants.</span>
       </p>
+
+      <!-- Quick Stats Pills -->
+      <div class="flex flex-wrap justify-center gap-3">
+        <div class="flex items-center gap-2 px-4 py-2 bg-[#0078D4]/10 rounded-full">
+          <span class="text-[#0078D4] font-semibold">{docsData.categories.length}</span>
+          <span class="text-sm text-[var(--color-text-secondary)]">catégories</span>
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 bg-[#E95420]/10 rounded-full">
+          <span class="text-[#E95420] font-semibold">{totalProcedures}</span>
+          <span class="text-sm text-[var(--color-text-secondary)]">procédures</span>
+        </div>
+        <div class="flex items-center gap-2 px-4 py-2 bg-[#7B2FBE]/10 rounded-full">
+          <span class="text-[#7B2FBE] font-semibold">{Math.round(totalDuration / 60)}h</span>
+          <span class="text-sm text-[var(--color-text-secondary)]">de contenu</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Procedures -->
+    <div class="max-w-6xl mx-auto mb-16">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="font-display text-xl font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
+          <svg class="w-5 h-5 text-[#00B4D8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Procédures récentes
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        {recentProcedures.map((procedure) => {
+          const category = getCategoryInfo(procedure.data.category);
+          return (
+            <a
+              href={`/procedure/${procedure.slug}`}
+              class="group block bg-[var(--color-bg-primary)] rounded-xl border border-[var(--color-border)] overflow-hidden card-hover"
+            >
+              <!-- Cover Image -->
+              <div class="aspect-video bg-[var(--color-bg-tertiary)] overflow-hidden">
+                {procedure.data.cover ? (
+                  <img
+                    src={procedure.data.cover}
+                    alt={procedure.data.title}
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                ) : (
+                  <div class="w-full h-full flex items-center justify-center text-4xl">
+                    {categoryEmojis[procedure.data.category] || '📄'}
+                  </div>
+                )}
+              </div>
+
+              <!-- Content -->
+              <div class="p-4">
+                <div class="flex items-center gap-2 mb-2">
+                  <span
+                    class="w-2 h-2 rounded-full"
+                    style={`background-color: ${category?.color || '#666'}`}
+                  ></span>
+                  <span class="text-xs text-[var(--color-text-secondary)]">
+                    {category?.label}
+                  </span>
+                </div>
+                <h3 class="font-display font-semibold text-sm text-[var(--color-text-primary)] group-hover:text-[#0078D4] transition-colors line-clamp-2 mb-3">
+                  {procedure.data.title}
+                </h3>
+                <div class="flex items-center justify-between">
+                  <LevelBadge level={procedure.data.level} />
+                  <span class="flex items-center gap-1 text-xs text-[var(--color-text-secondary)]">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {procedure.data.duration} min
+                  </span>
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
     </div>
 
     <!-- Categories Grid -->
-    <div class="max-w-6xl mx-auto">
-      <h2 class="font-display text-xl font-semibold text-[var(--color-text-primary)] mb-6">
-        Catégories
+    <div class="max-w-6xl mx-auto mb-16">
+      <h2 class="font-display text-xl font-semibold text-[var(--color-text-primary)] mb-6 flex items-center gap-2">
+        <svg class="w-5 h-5 text-[#0078D4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+        Explorer par catégorie
       </h2>
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {docsData.categories.map((category) => {
@@ -50,7 +147,7 @@ const categoryEmojis: Record<string, string> = {
               class="group block bg-[var(--color-bg-primary)] rounded-xl border border-[var(--color-border)] p-5 card-hover text-center"
             >
               <div
-                class="w-14 h-14 mx-auto rounded-xl flex items-center justify-center text-3xl mb-4"
+                class="w-14 h-14 mx-auto rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform"
                 style={`background-color: ${category.color}15`}
               >
                 {categoryEmojis[category.id]}
@@ -73,41 +170,26 @@ const categoryEmojis: Record<string, string> = {
       </div>
     </div>
 
-    <!-- Stats Section -->
-    <div class="max-w-6xl mx-auto mt-12">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="bg-[var(--color-bg-secondary)] rounded-xl p-6 text-center">
-          <div class="text-3xl font-bold text-[#0078D4]">
-            {docsData.categories.length}
-          </div>
-          <div class="text-sm text-[var(--color-text-secondary)] mt-1">
-            Catégories
-          </div>
+    <!-- Team CTA -->
+    <div class="max-w-6xl mx-auto">
+      <div class="bg-gradient-to-br from-[#0078D4]/10 to-[#00B4D8]/10 rounded-2xl p-8 border border-[#0078D4]/20 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <h3 class="font-display text-xl font-semibold text-[var(--color-text-primary)] mb-2">
+            Créé par des étudiants en Master IRC
+          </h3>
+          <p class="text-[var(--color-text-secondary)]">
+            Documentations testées et validées pour les formations BTS SIO et Bachelor.
+          </p>
         </div>
-        <div class="bg-[var(--color-bg-secondary)] rounded-xl p-6 text-center">
-          <div class="text-3xl font-bold text-[#E95420]">
-            {docsData.categories.reduce((sum, cat) => sum + cat.subcategories.length, 0)}
-          </div>
-          <div class="text-sm text-[var(--color-text-secondary)] mt-1">
-            Sous-catégories
-          </div>
-        </div>
-        <div class="bg-[var(--color-bg-secondary)] rounded-xl p-6 text-center">
-          <div class="text-3xl font-bold text-[#00B4D8]">
-            {totalProcedures}
-          </div>
-          <div class="text-sm text-[var(--color-text-secondary)] mt-1">
-            Procédures
-          </div>
-        </div>
-        <div class="bg-[var(--color-bg-secondary)] rounded-xl p-6 text-center">
-          <div class="text-3xl font-bold text-[#7B2FBE]">
-            {Math.round(totalDuration / 60)}h
-          </div>
-          <div class="text-sm text-[var(--color-text-secondary)] mt-1">
-            De contenu
-          </div>
-        </div>
+        <a
+          href="/a-propos"
+          class="shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-[var(--color-text-primary)] text-[var(--color-bg-primary)] rounded-xl font-medium hover:opacity-90 transition-opacity"
+        >
+          Découvrir l'équipe
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
       </div>
     </div>
   </div>

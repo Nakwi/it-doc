@@ -55,17 +55,6 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
 
           <Breadcrumb items={breadcrumbItems} />
 
-          <!-- Hero Image -->
-          {procedure.data.cover && (
-            <div class="aspect-video bg-[var(--color-bg-tertiary)] rounded-xl mb-8 overflow-hidden">
-              <img
-                src={procedure.data.cover}
-                alt={procedure.data.title}
-                class="w-full h-full object-cover"
-              />
-            </div>
-          )}
-
           <!-- Procedure Header -->
           <div class="mb-8">
             <h1 class="font-display text-3xl font-bold text-[var(--color-text-primary)] mb-4">

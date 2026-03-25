@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const procedures = await getCollection('procedures');
+
+// Count tags
+const tagCounts: Record<string, number> = {};
+procedures.forEach(p => {
+  p.data.tags?.forEach(tag => {
+    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+  });
+});
+
+// Sort by count (most used first)
+const sortedTags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
+---
+
+<Layout title="Tags" currentPath="/tags">
+  <div class="p-6 lg:p-10">
+    <div class="max-w-4xl mx-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-12 h-12 rounded-xl bg-[#0078D4]/10 flex items-center justify-center">
+            <svg class="w-6 h-6 text-[#0078D4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="font-display text-2xl font-bold text-[var(--color-text-primary)]">
+              Tags
+            </h1>
+            <p class="text-[var(--color-text-secondary)]">
+              {sortedTags.length} tags disponibles
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tags Cloud -->
+      <div class="flex flex-wrap gap-3">
+        {sortedTags.map(([tag, count]) => (
+          <a
+            href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+            class="inline-flex items-center gap-2 px-4 py-2 bg-[var(--color-bg-secondary)] hover:bg-[var(--color-bg-tertiary)] border border-[var(--color-border)] rounded-full transition-colors"
+          >
+            <span class="text-[var(--color-text-primary)] font-medium">{tag}</span>
+            <span class="text-xs text-[var(--color-text-secondary)] bg-[var(--color-bg-tertiary)] px-2 py-0.5 rounded-full">
+              {count}
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</Layout>

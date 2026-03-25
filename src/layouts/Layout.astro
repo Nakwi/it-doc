@@ -35,20 +35,30 @@ allProcedures.forEach(p => {
 // Import docs.json for category info
 import docsData from '../data/docs.json';
 
-// Prepare search data for client-side
+// Sanitize string to prevent XSS in JSON injection
+const sanitizeString = (str: string): string => {
+  return str
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/'/g, '\\u0027')
+    .replace(/"/g, '\\u0022');
+};
+
+// Prepare search data for client-side (sanitized)
 const searchData = allProcedures.map(p => {
   const category = docsData.categories.find(c => c.id === p.data.category);
   const subcategory = category?.subcategories.find(s => s.id === p.data.subcategory);
   return {
-    id: p.slug,
-    title: p.data.title,
-    tags: p.data.tags || [],
-    level: p.data.level,
+    id: sanitizeString(p.slug),
+    title: sanitizeString(p.data.title),
+    tags: (p.data.tags || []).map(t => sanitizeString(t)),
+    level: sanitizeString(p.data.level),
     duration: p.data.duration,
-    categoryId: p.data.category,
-    categoryLabel: category?.label || p.data.category,
-    subcategoryId: p.data.subcategory,
-    subcategoryLabel: subcategory?.label || p.data.subcategory,
+    categoryId: sanitizeString(p.data.category),
+    categoryLabel: sanitizeString(category?.label || p.data.category),
+    subcategoryId: sanitizeString(p.data.subcategory),
+    subcategoryLabel: sanitizeString(subcategory?.label || p.data.subcategory),
     color: category?.color || '#0078D4'
   };
 });

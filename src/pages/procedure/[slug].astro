@@ -72,9 +72,12 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
               </span>
 
               {procedure.data.tags && procedure.data.tags.map(tag => (
-                <span class="px-3 py-1 text-sm bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] rounded-full">
+                <a
+                  href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
+                  class="px-3 py-1 text-sm bg-[var(--color-bg-tertiary)] text-[var(--color-text-secondary)] rounded-full hover:bg-[#0078D4]/10 hover:text-[#0078D4] transition-colors"
+                >
                   {tag}
-                </span>
+                </a>
               ))}
             </div>
           </div>
@@ -292,6 +295,15 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
 
 <script>
   setTimeout(() => {
+    // Secure external links (add noopener noreferrer)
+    document.querySelectorAll('.prose-content a[href^="http"]').forEach((link) => {
+      const anchor = link as HTMLAnchorElement;
+      if (!anchor.hostname.includes(window.location.hostname)) {
+        anchor.setAttribute('rel', 'noopener noreferrer nofollow');
+        anchor.setAttribute('target', '_blank');
+      }
+    });
+
     // Code blocks setup
     document.querySelectorAll('.prose-content pre').forEach((pre) => {
       if (pre.parentElement.classList.contains('code-block-wrapper')) return;

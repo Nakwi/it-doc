@@ -64,7 +64,9 @@ export default function Sidebar({ currentPath = '', procedureCounts = {} }) {
         </h2>
 
         <nav className="space-y-1">
-          {docsData.categories.map(category => (
+          {docsData.categories
+            .filter(category => getTotalProcedures(category.id) > 0)
+            .map(category => (
             <div key={category.id}>
               {/* Category Header */}
               <button
@@ -99,7 +101,9 @@ export default function Sidebar({ currentPath = '', procedureCounts = {} }) {
               {/* Subcategories */}
               {expandedCategories[category.id] && (
                 <div className="ml-4 mt-1 space-y-1 border-l border-[var(--color-border)] pl-3">
-                  {category.subcategories.map(subcategory => (
+                  {category.subcategories
+                    .filter(subcategory => getSubcategoryCount(category.id, subcategory.id) > 0)
+                    .map(subcategory => (
                     <a
                       key={subcategory.id}
                       href={`/${category.id}/${subcategory.id}`}

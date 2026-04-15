@@ -31,6 +31,11 @@
           "id": "serveur-fichiers",
           "label": "Serveur de fichiers",
           "procedures": []
+        },
+        {
+          "id": "bureau-a-distance",
+          "label": "Bureau à distance",
+          "procedures": []
         }
       ]
     },
@@ -141,6 +146,11 @@
         {
           "id": "wsl",
           "label": "WSL",
+          "procedures": []
+        },
+        {
+          "id": "proxmox",
+          "label": "Proxmox",
           "procedures": []
         }
       ]

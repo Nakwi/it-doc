@@ -39,8 +39,9 @@ const breadcrumbItems = [
 
 <Layout
   title={category.label}
-  description={category.description}
+  description={`${category.description} — ${totalProcedures} procédure${totalProcedures > 1 ? 's' : ''} disponible${totalProcedures > 1 ? 's' : ''} sur IT-DOC, documentation technique pour BTS SIO et Bachelor.`}
   currentPath={`/${categorie}`}
+  keywords={[category.label, 'BTS SIO', 'Bachelor informatique', 'documentation technique', ...category.subcategories.map(s => s.label)]}
 >
   <div class="p-6 lg:p-10">
     <div class="max-w-4xl mx-auto">

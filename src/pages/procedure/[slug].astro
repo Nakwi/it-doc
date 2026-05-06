@@ -17,7 +17,6 @@ export async function getStaticPaths() {
 const { procedure } = Astro.props;
 const { Content, headings } = await procedure.render();
 
-// Get category and subcategory labels
 const category = docsData.categories.find(c => c.id === procedure.data.category);
 const subcategory = category?.subcategories.find(s => s.id === procedure.data.subcategory);
 
@@ -27,14 +26,62 @@ const breadcrumbItems = [
   { label: procedure.data.title }
 ];
 
-// Filter headings for TOC (h2 and h3)
 const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
+
+// SEO
+const seoDescription = [
+  `Procédure ${procedure.data.level.toLowerCase()}`,
+  category?.label,
+  subcategory?.label,
+  `— ${procedure.data.title}.`,
+  `Durée estimée : ${procedure.data.duration} minutes.`,
+  'Documentation IT pour BTS SIO et Bachelor.',
+].filter(Boolean).join(' ');
+
+const proficiencyMap: Record<string, string> = {
+  'Débutant': 'Beginner',
+  'Intermédiaire': 'Intermediate',
+  'Avancé': 'Expert',
+};
+
+const origin = Astro.site?.toString().replace(/\/$/, '') ?? Astro.url.origin;
+
+const articleStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: procedure.data.title,
+  description: seoDescription,
+  url: `${origin}/procedure/${procedure.slug}`,
+  inLanguage: 'fr-FR',
+  proficiencyLevel: proficiencyMap[procedure.data.level] ?? procedure.data.level,
+  ...(procedure.data.tags?.length ? { keywords: procedure.data.tags.join(', ') } : {}),
+  ...(procedure.data.cover ? { image: procedure.data.cover.startsWith('http') ? procedure.data.cover : `${origin}${procedure.data.cover}` } : {}),
+  author: {
+    '@type': 'Organization',
+    name: 'IT-DOC',
+    url: origin,
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'IT-DOC',
+    url: origin,
+  },
+  isPartOf: {
+    '@type': 'WebSite',
+    name: 'IT-DOC',
+    url: origin,
+  },
+};
 ---
 
 <Layout
   title={procedure.data.title}
-  description={`${procedure.data.title} - Documentation IT-DOC`}
+  description={seoDescription}
   currentPath={`/${procedure.data.category}/${procedure.data.subcategory}`}
+  type="article"
+  image={procedure.data.cover}
+  keywords={procedure.data.tags}
+  structuredData={articleStructuredData}
 >
   <ReadingProgress client:load />
   <div class="p-6 lg:p-10">

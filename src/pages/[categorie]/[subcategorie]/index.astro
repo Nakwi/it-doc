@@ -61,8 +61,9 @@ function getLevelBadgeClasses(level: string) {
 
 <Layout
   title={`${subcategory.label} - ${category.label}`}
-  description={`Procédures ${subcategory.label} pour ${category.label}`}
+  description={`${procedures.length} procédure${procedures.length > 1 ? 's' : ''} ${subcategory.label} pour ${category.label} — Documentation IT-DOC pour BTS SIO et Bachelor informatique.`}
   currentPath={`/${categorie}/${subcategorie}`}
+  keywords={[subcategory.label, category.label, 'BTS SIO', 'Bachelor informatique', 'documentation technique']}
 >
   <div class="p-6 lg:p-10">
     <div class="max-w-5xl mx-auto">

@@ -9,14 +9,50 @@ interface Props {
   description?: string;
   currentPath?: string;
   showSidebar?: boolean;
+  image?: string;
+  type?: 'website' | 'article';
+  keywords?: string[];
+  noindex?: boolean;
+  structuredData?: object;
 }
 
 const {
   title,
   description = "Documentation technique pour BTS SIO et Bachelor informatique",
   currentPath = "",
-  showSidebar = true
+  showSidebar = true,
+  image,
+  type = 'website',
+  keywords = [],
+  noindex = false,
+  structuredData,
 } = Astro.props;
+
+// Canonical URL & OG image
+const origin = Astro.site?.toString().replace(/\/$/, '') ?? Astro.url.origin;
+const canonicalURL = `${origin}${Astro.url.pathname}`;
+const ogImage = image
+  ? (image.startsWith('http') ? image : `${origin}${image}`)
+  : null;
+
+const pageTitle = `${title} | IT-DOC`;
+
+// Default WebSite structured data
+const defaultStructuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'IT-DOC',
+  description: 'Documentation technique pour BTS SIO et Bachelor informatique',
+  url: origin,
+  inLanguage: 'fr-FR',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: `${origin}/?q={search_term_string}`,
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+const jsonLd = JSON.stringify(structuredData ?? defaultStructuredData);
 
 // Get procedure counts for sidebar
 const allProcedures = await getCollection('procedures');
@@ -32,10 +68,8 @@ allProcedures.forEach(p => {
   procedureCounts[p.data.category][p.data.subcategory]++;
 });
 
-// Import docs.json for category info
 import docsData from '../data/docs.json';
 
-// Sanitize string to prevent XSS in JSON injection
 const sanitizeString = (str: string): string => {
   return str
     .replace(/</g, '\\u003c')
@@ -45,7 +79,6 @@ const sanitizeString = (str: string): string => {
     .replace(/"/g, '\\u0022');
 };
 
-// Prepare search data for client-side (sanitized)
 const searchData = allProcedures.map(p => {
   const category = docsData.categories.find(c => c.id === p.data.category);
   const subcategory = category?.subcategories.find(s => s.id === p.data.subcategory);
@@ -69,11 +102,45 @@ const searchData = allProcedures.map(p => {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Search Console -->
+    <meta name="google-site-verification" content="acTEYAusovLb5q_PJ9IiENNW5f4NJ3f0Nbj-1MWwZ7s" />
+
+    <!-- Primary Meta -->
+    <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    {keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+    <meta name="author" content="IT-DOC" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="IT-DOC" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:locale" content="fr_FR" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    {ogImage && <meta property="og:image:alt" content={title} />}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+
+    <!-- Sitemap -->
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title} | IT-DOC</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json" set:html={jsonLd} />
+
     <script is:inline>
-      // Check for dark mode preference
       if (localStorage.getItem('theme') === 'dark' ||
           (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');

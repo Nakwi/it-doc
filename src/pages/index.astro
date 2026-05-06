@@ -33,7 +33,12 @@ const categoryEmojis: Record<string, string> = {
 };
 ---
 
-<Layout title="Accueil" currentPath="/">
+<Layout
+  title="Accueil"
+  description={`IT-DOC — ${totalProcedures} procédures techniques pour BTS SIO et Bachelor informatique. Windows Server, Linux, Réseau, Sécurité, Virtualisation. Documentation claire et structurée.`}
+  currentPath="/"
+  keywords={['BTS SIO', 'Bachelor informatique', 'documentation technique', 'Windows Server', 'Linux', 'réseau', 'sécurité', 'virtualisation', 'procédures IT']}
+>
   <div class="p-6 lg:p-10">
     <!-- Hero Section -->
     <div class="text-center max-w-3xl mx-auto mb-12">

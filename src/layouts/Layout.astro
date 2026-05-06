@@ -140,6 +140,9 @@ const searchData = allProcedures.map(p => {
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json" set:html={jsonLd} />
 
+    <!-- Umami Analytics (cookie-free) -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="3105cb1e-17c5-4c89-a03f-d9b6382b6219"></script>
+
     <script is:inline>
       if (localStorage.getItem('theme') === 'dark' ||
           (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {

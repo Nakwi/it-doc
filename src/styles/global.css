@@ -340,3 +340,85 @@ code, pre {
   font-style: italic;
   color: var(--color-text-secondary);
 }
+
+/* ==================== */
+/* RESPONSIVE — MOBILE  */
+/* ==================== */
+
+@media (max-width: 768px) {
+  .prose-content {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .prose-content h1 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .prose-content h2 {
+    font-size: 1.25rem;
+    margin-top: 2rem;
+  }
+
+  .prose-content h3 {
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+  }
+
+  .prose-content h4 {
+    font-size: 1rem;
+  }
+
+  .prose-content p,
+  .prose-content li {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .prose-content code:not(pre code) {
+    word-break: break-word;
+  }
+
+  /* Make tables scroll horizontally on mobile */
+  .prose-content table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  .prose-content th,
+  .prose-content td {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  .prose-content pre {
+    font-size: 0.8rem;
+    padding: 0.875rem;
+    border-radius: 0.5rem;
+  }
+
+  .prose-content img {
+    margin: 1rem 0;
+    border-radius: 0.5rem;
+  }
+
+  .prose-content ul li,
+  .prose-content ol li {
+    margin-bottom: 0.4rem;
+  }
+
+  .prose-content blockquote {
+    padding: 0.875rem 1rem;
+    margin: 1.25rem 0;
+  }
+}
+
+/* Avoid double tap zoom on interactive controls */
+button,
+a {
+  touch-action: manipulation;
+}

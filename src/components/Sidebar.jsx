@@ -31,14 +31,39 @@ const categoryIcons = {
 
 export default function Sidebar({ currentPath = '', procedureCounts = {} }) {
   const [expandedCategories, setExpandedCategories] = useState({});
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   useEffect(() => {
-    // Auto-expand category if we're on a page within it
     const pathParts = currentPath.split('/').filter(Boolean);
     if (pathParts.length > 0) {
       setExpandedCategories(prev => ({ ...prev, [pathParts[0]]: true }));
     }
   }, [currentPath]);
+
+  useEffect(() => {
+    const handleToggle = () => setIsMobileOpen(prev => !prev);
+    const handleOpen = () => setIsMobileOpen(true);
+    const handleClose = () => setIsMobileOpen(false);
+
+    window.addEventListener('toggle-sidebar', handleToggle);
+    window.addEventListener('open-sidebar', handleOpen);
+    window.addEventListener('close-sidebar', handleClose);
+
+    return () => {
+      window.removeEventListener('toggle-sidebar', handleToggle);
+      window.removeEventListener('open-sidebar', handleOpen);
+      window.removeEventListener('close-sidebar', handleClose);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isMobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isMobileOpen]);
 
   const toggleCategory = (categoryId) => {
     setExpandedCategories(prev => ({
@@ -56,8 +81,8 @@ export default function Sidebar({ currentPath = '', procedureCounts = {} }) {
     return procedureCounts[categoryId]?.[subcategoryId] || 0;
   };
 
-  return (
-    <aside className="w-60 shrink-0 h-[calc(100vh-64px)] sticky top-16 bg-[var(--color-bg-secondary)] border-r border-[var(--color-border)] overflow-y-auto hidden lg:block">
+  const sidebarContent = (
+    <>
       <div className="p-4">
         <h2 className="text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider mb-3">
           Documentation
@@ -68,7 +93,6 @@ export default function Sidebar({ currentPath = '', procedureCounts = {} }) {
             .filter(category => getTotalProcedures(category.id) > 0)
             .map(category => (
             <div key={category.id}>
-              {/* Category Header */}
               <button
                 onClick={() => toggleCategory(category.id)}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
@@ -98,7 +122,6 @@ export default function Sidebar({ currentPath = '', procedureCounts = {} }) {
                 </div>
               </button>
 
-              {/* Subcategories */}
               {expandedCategories[category.id] && (
                 <div className="ml-4 mt-1 space-y-1 border-l border-[var(--color-border)] pl-3">
                   {category.subcategories
@@ -107,7 +130,8 @@ export default function Sidebar({ currentPath = '', procedureCounts = {} }) {
                     <a
                       key={subcategory.id}
                       href={`/${category.id}/${subcategory.id}`}
-                      className={`flex items-center justify-between px-3 py-1.5 rounded-md text-sm transition-colors ${
+                      onClick={() => setIsMobileOpen(false)}
+                      className={`flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors ${
                         currentPath === `/${category.id}/${subcategory.id}`
                           ? 'bg-[var(--color-bg-tertiary)] text-[var(--color-text-primary)] font-medium'
                           : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
@@ -126,12 +150,39 @@ export default function Sidebar({ currentPath = '', procedureCounts = {} }) {
         </nav>
       </div>
 
-      {/* Footer */}
       <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[var(--color-border)] bg-[var(--color-bg-secondary)]">
         <p className="text-xs text-[var(--color-text-secondary)] text-center">
           IT-DOC v1.0.0
         </p>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <aside className="w-60 shrink-0 h-[calc(100vh-64px)] sticky top-16 bg-[var(--color-bg-secondary)] border-r border-[var(--color-border)] overflow-y-auto hidden lg:block">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile drawer backdrop */}
+      {isMobileOpen && (
+        <div
+          className="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          onClick={() => setIsMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Mobile drawer */}
+      <aside
+        className={`lg:hidden fixed top-16 left-0 bottom-0 w-72 max-w-[85vw] z-50 bg-[var(--color-bg-secondary)] border-r border-[var(--color-border)] overflow-y-auto transform transition-transform duration-300 ease-out ${
+          isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        aria-hidden={!isMobileOpen}
+      >
+        {sidebarContent}
+      </aside>
+    </>
   );
 }

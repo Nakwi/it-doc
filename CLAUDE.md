@@ -128,6 +128,24 @@ npm run build    # Build production
 npm run preview  # Preview du build
 ```
 
+## Déploiement
+
+- Le site est hébergé sur une **VM** (pas Vercel)
+- Domaine : **it-doc.fr**
+- Build : `npm run build` → génère le dossier `dist/` (écrase l'ancien)
+- Le dossier de déploiement sur la VM est `/distrib`
+- Après chaque modification : `npm run build` puis copier `dist/` vers `/distrib`
+- Serveur de dev accessible sur le réseau local : `npm run dev -- --host 0.0.0.0` → http://192.168.1.66:4321/
+
+## SEO
+
+- Balises Open Graph, Twitter Card, canonical URL dans `Layout.astro`
+- Sitemap auto-généré via `@astrojs/sitemap` → `/sitemap-index.xml`
+- `robots.txt` dans `public/`
+- JSON-LD WebSite sur toutes les pages, TechArticle sur les pages procédures
+- Google Search Console : balise meta de vérification dans `Layout.astro`
+- Site configuré avec `site: 'https://it-doc.fr'` dans `astro.config.mjs`
+
 ## Points Importants
 
 1. **Ne pas modifier docs.json pour ajouter des procédures** - Seule la structure catégories/sous-catégories y est définie. Les procédures viennent des fichiers Markdown.

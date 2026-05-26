@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installer Windows Server 2025 sur VMware Fusion (macOS) | IT-DOC</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="../" data-current-path="/virtualisation/vmware">
+
+  <main data-content>
+    <div class="container">
+      <div class="proc-layout">
+        <div class="proc-main">
+          <a href="../virtualisation/vmware.html" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Retour
+          </a>
+
+          <nav class="breadcrumb">
+            <a href="../index.html">Accueil</a>
+            <span class="sep">/</span>
+            <a href="../virtualisation.html">Virtualisation</a>
+            <span class="sep">/</span>
+            <a href="../virtualisation/vmware.html">VMware</a>
+            <span class="sep">/</span>
+            <span class="current">Installer Windows Server 2025 sur VMware Fusion (macOS)</span>
+          </nav>
+
+          <div class="proc-header">
+            <h1>Installer Windows Server 2025 sur VMware Fusion (macOS)</h1>
+            <div class="proc-meta">
+              <span class="badge badge-intermediaire">Intermédiaire</span>
+              <span class="meta-duration">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                45 minutes
+              </span>
+            <a href="../tags.html?tag=Windows%20Server%202025" class="tag">Windows Server 2025</a>
+            <a href="../tags.html?tag=VMware%20Fusion" class="tag">VMware Fusion</a>
+            <a href="../tags.html?tag=macOS" class="tag">macOS</a>
+            <a href="../tags.html?tag=Installation" class="tag">Installation</a>
+            <a href="../tags.html?tag=VM" class="tag">VM</a>
+            </div>
+          </div>
+
+          <article class="prose">
+<h2 id="introduction">Introduction</h2>
+<p>Ce guide détaille la procédure pas à pas pour installer et configurer <strong>Windows Server 2025</strong> sur une machine virtuelle VMware Fusion. Il se concentre spécifiquement sur l&#39;installation de la version avec interface graphique complète (Desktop Experience) et la configuration correcte du réseau statique pour éviter les conflits courants.</p>
+<h3 id="prerequis">Prérequis</h3>
+<ul>
+<li><strong>Logiciel :</strong> VMware Fusion (Pro ou Player) installé sur macOS</li>
+<li><strong>Média d&#39;installation :</strong> Fichier ISO de Windows Server 2025 Standard</li>
+<li><strong>Ressources VM recommandées :</strong><ul>
+<li>Processeur : 2 vCPU minimum</li>
+<li>Mémoire (RAM) : 4 Go minimum (8 Go recommandés)</li>
+<li>Espace disque : 60 Go minimum</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="installation-de-windows-server-2025">Installation de Windows Server 2025</h2>
+<p><img src="../images/winserver2025/image1.png" alt="VMware Fusion — démarrage de l'installation" /></p>
+<h3 id="creation-de-la-vm">Création de la VM</h3>
+<p>Lancez VMware Fusion et créez une nouvelle machine virtuelle en glissant votre fichier ISO Windows Server 2025. Suivez l&#39;assistant jusqu&#39;au démarrage de la VM.</p>
+<p><img src="../images/winserver2025/image2.png" alt="Assistant de création de la VM dans VMware Fusion" /></p>
+<h3 id="point-critique-choix-du-systeme-dexploitation">⚠ Point CRITIQUE : Choix du Système d&#39;Exploitation</h3>
+<p>Lors de l&#39;installation, après avoir entré ou ignoré la clé de produit, vous verrez une liste de systèmes d&#39;exploitation :</p>
+<table>
+<thead>
+<tr>
+<th align="left">Option affichée</th>
+<th align="left">Description</th>
+<th align="left">Choix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Windows Server 2025 Standard</td>
+<td align="left">Version Core (sans interface graphique)</td>
+<td align="left">❌ NE PAS CHOISIR</td>
+</tr>
+<tr>
+<td align="left"><strong>Windows Server 2025 Standard (Desktop Experience)</strong></td>
+<td align="left"><strong>Version complète avec Bureau</strong></td>
+<td align="left">✅ <strong>SÉLECTIONNER CECI</strong></td>
+</tr>
+<tr>
+<td align="left">Windows Server 2025 Datacenter</td>
+<td align="left">Version Core Datacenter</td>
+<td align="left">❌ NE PAS CHOISIR</td>
+</tr>
+<tr>
+<td align="left">Windows Server 2025 Datacenter (Desktop Experience)</td>
+<td align="left">Version complète Datacenter</td>
+<td align="left">Optionnel si besoin de Datacenter</td>
+</tr>
+</tbody></table>
+<h3 id="suite-de-linstallation">Suite de l&#39;installation</h3>
+<ol>
+<li>Sélectionnez <strong>&quot;Personnalisé : Installer uniquement le système d&#39;exploitation Windows (avancé)&quot;</strong>.</li>
+</ol>
+<p><img src="../images/winserver2025/image3.png" alt="Choix du type d'installation personnalisé" /></p>
+<ol start="2">
+<li><strong>Partitionnement :</strong> Sélectionnez le lecteur non alloué et cliquez sur <strong>Suivant</strong>. Windows créera automatiquement les partitions nécessaires.</li>
+</ol>
+<p><img src="../images/winserver2025/image4.png" alt="Partitionnement du disque" /></p>
+<ol start="3">
+<li>L&#39;installation copiera les fichiers et redémarrera plusieurs fois.</li>
+</ol>
+<p><img src="../images/winserver2025/image5.png" alt="Progression de l'installation Windows Server 2025" /></p>
+<hr>
+<h2 id="premier-demarrage-et-configuration-de-base">Premier démarrage et configuration de base</h2>
+<p>Une fois l&#39;installation terminée, vous arriverez sur l&#39;écran de configuration finale.</p>
+<ol>
+<li><strong>Mot de passe Administrateur :</strong> Définissez un mot de passe complexe (majuscules, minuscules, chiffres, caractères spéciaux).</li>
+</ol>
+<p><img src="../images/winserver2025/image6.png" alt="Écran de définition du mot de passe administrateur" /></p>
+<ol start="2">
+<li>Connectez-vous avec le mot de passe défini.</li>
+</ol>
+<p><img src="../images/winserver2025/image7.png" alt="Écran de connexion Windows Server 2025" /></p>
+<ol start="3">
+<li>Le <strong>Gestionnaire de serveur</strong> s&#39;ouvrira automatiquement.</li>
+</ol>
+<p><img src="../images/winserver2025/image8.png" alt="Gestionnaire de serveur au premier démarrage" /></p>
+<hr>
+<h2 id="configuration-reseau-adresse-ip-fixe">Configuration réseau — Adresse IP fixe</h2>
+<p>Un serveur doit disposer d&#39;une adresse IP fixe pour être contacté de manière fiable par les autres machines. Nous allons configurer cela en évitant l&#39;erreur courante de configuration de la passerelle.</p>
+<h3 id="analyse-de-votre-reseau-vmware">Analyse de votre réseau VMware</h3>
+<p>Par défaut, VMware Fusion utilise la plage <strong>192.168.213.x</strong> :</p>
+<ul>
+<li><strong>Adresse IP actuelle (DHCP) :</strong> 192.168.213.129</li>
+<li><strong>Passerelle par défaut (Gateway) :</strong> 192.168.213.2</li>
+</ul>
+<h3 id="configuration-recommandee">Configuration recommandée</h3>
+<p><strong>Méthode : Via les Paramètres Windows (GUI)</strong></p>
+<ol>
+<li>Faites un clic droit sur l&#39;icône réseau dans la barre des tâches (en bas à droite) &gt; <strong>Paramètres réseau et Internet</strong>.</li>
+<li>Cliquez sur <strong>Ethernet</strong>.</li>
+<li>À la ligne &quot;Attribution d&#39;adresse IP&quot;, cliquez sur <strong>Modifier</strong>.</li>
+<li>Passez de &quot;Automatique (DHCP)&quot; à <strong>Manuel</strong>.</li>
+<li>Activez <strong>IPv4</strong>.</li>
+<li>Remplissez les champs avec les valeurs recommandées.</li>
+<li>Cliquez sur <strong>Enregistrer</strong>.</li>
+</ol>
+<p><img src="../images/winserver2025/image9.png" alt="Configuration de l'adresse IP fixe" /></p>
+<hr>
+<h2 id="configuration-avancee-vmware-fusion">Configuration avancée VMware Fusion</h2>
+<p>Par défaut, VMware Fusion utilise une plage d&#39;adresses aléatoire (ici <code>192.168.213.x</code>). Vous pouvez conserver cette configuration ou la modifier.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Option</th>
+<th align="left">Avantages</th>
+<th align="left">Inconvénients</th>
+<th align="left">Recommandation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Garder 192.168.213.x</strong></td>
+<td align="left">Configuration immédiate, pas de risque de casser le NAT VMware</td>
+<td align="left">Adresse moins standard</td>
+<td align="left">✅ <strong>Recommandé pour débuter</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>Changer pour 192.168.1.x</strong></td>
+<td align="left">Standard réseau classique, plus intuitif</td>
+<td align="left">Nécessite de modifier les fichiers de config VMware</td>
+<td align="left">Pour utilisateurs avancés</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="verification-et-tests-de-connectivite">Vérification et tests de connectivité</h2>
+<p>Une fois l&#39;IP fixe configurée, il est impératif de valider la connexion.</p>
+<ol>
+<li>Ouvrez une invite de commande (<code>Win + R</code>, tapez <code>cmd</code>).</li>
+<li>Tapez la commande suivante pour vérifier vos paramètres :</li>
+</ol>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">cmd</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-cmd">ipconfig /all</code></pre>
+</div>
+<p>Vérifiez que &quot;DHCP activé&quot; est sur &quot;Non&quot; et que les IP sont correctes.</p>
+<hr>
+<h2 id="configuration-dns">Configuration DNS</h2>
+<p>Pour qu&#39;un serveur puisse naviguer sur Internet et télécharger des mises à jour, il doit pouvoir résoudre les noms de domaine.</p>
+<p><strong>DNS Publics recommandés :</strong></p>
+<ul>
+<li>Google : <code>8.8.8.8</code> et <code>8.8.4.4</code></li>
+<li>Cloudflare : <code>1.1.1.1</code> et <code>1.0.0.1</code></li>
+</ul>
+<hr>
+<h2 id="bonnes-pratiques-de-securite">Bonnes pratiques de sécurité</h2>
+<ul>
+<li><strong>Windows Update :</strong> Lancez immédiatement une recherche de mises à jour après l&#39;installation.</li>
+<li><strong>Pare-feu :</strong> Ne désactivez pas le pare-feu. Créez des règles spécifiques pour vos applications.</li>
+<li><strong>VMware Tools :</strong> Installez les VMware Tools (Menu &quot;Machine Virtuelle&quot; &gt; &quot;Installer VMware Tools&quot;) pour améliorer les performances graphiques et la gestion de la souris.</li>
+</ul>
+<hr>
+<h2 id="depannage-reseau">Dépannage réseau</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Symptôme</th>
+<th align="left">Cause probable</th>
+<th align="left">Solution</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Ping <code>8.8.8.8</code> échoue</td>
+<td align="left">Mauvaise passerelle</td>
+<td align="left">Vérifiez que la passerelle est bien <code>192.168.213.2</code> et non votre propre IP</td>
+</tr>
+<tr>
+<td align="left">Ping <code>8.8.8.8</code> OK mais <code>google.com</code> échoue</td>
+<td align="left">Problème DNS</td>
+<td align="left">Vérifiez que les serveurs DNS sont bien configurés (ex: <code>8.8.8.8</code>)</td>
+</tr>
+<tr>
+<td align="left">&quot;Réseau non identifié&quot;</td>
+<td align="left">Masque de sous-réseau incorrect</td>
+<td align="left">Assurez-vous que le masque est <code>255.255.255.0</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="commandes-utiles-powershell-et-cmd">Commandes utiles PowerShell et CMD</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Action</th>
+<th align="left">Commande</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Voir la configuration IP</td>
+<td align="left"><code>ipconfig /all</code></td>
+</tr>
+<tr>
+<td align="left">Tester la connexion</td>
+<td align="left"><code>ping [adresse_ip] -t</code></td>
+</tr>
+<tr>
+<td align="left">Voir les routes réseaux</td>
+<td align="left"><code>route print</code></td>
+</tr>
+<tr>
+<td align="left">Vider le cache DNS</td>
+<td align="left"><code>ipconfig /flushdns</code></td>
+</tr>
+<tr>
+<td align="left">Lister les adaptateurs réseau</td>
+<td align="left"><code>Get-NetAdapter</code> (PowerShell)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="annexes">Annexes</h2>
+<h3 id="plages-dadresses-ip-privees-rfc-1918">Plages d&#39;adresses IP privées (RFC 1918)</h3>
+<p>Ces adresses sont utilisables librement dans votre réseau local (LAN).</p>
+<ul>
+<li><strong>Classe A :</strong> 10.0.0.0 à 10.255.255.255</li>
+<li><strong>Classe B :</strong> 172.16.0.0 à 172.31.255.255</li>
+<li><strong>Classe C :</strong> 192.168.0.0 à 192.168.255.255 <em>(la plus courante pour les réseaux domestiques et VMware)</em></li>
+</ul>
+
+          </article>
+
+          <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--color-border)">
+            <a href="../virtualisation/vmware.html" class="back-link" style="margin:0;padding:8px 16px;background-color:var(--color-bg-secondary);border-radius:8px">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              Retour aux procédures
+            </a>
+          </div>
+        </div>
+
+        <aside class="toc-wrap">
+          <div class="toc-sticky">
+            <div class="toc-box">
+              <h4 class="toc-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                Sommaire
+              </h4>
+              <nav>
+                <ul class="toc-list">
+                  <li><a href="#introduction" class="toc-link" data-id="introduction">Introduction</a></li>
+                  <li><a href="#prerequis" class="toc-link depth-3" data-id="prerequis">Prérequis</a></li>
+                  <li><a href="#installation-de-windows-server-2025" class="toc-link" data-id="installation-de-windows-server-2025">Installation de Windows Server 2025</a></li>
+                  <li><a href="#creation-de-la-vm" class="toc-link depth-3" data-id="creation-de-la-vm">Création de la VM</a></li>
+                  <li><a href="#point-critique-choix-du-systeme-dexploitation" class="toc-link depth-3" data-id="point-critique-choix-du-systeme-dexploitation">⚠ Point CRITIQUE : Choix du Système d'Exploitation</a></li>
+                  <li><a href="#suite-de-linstallation" class="toc-link depth-3" data-id="suite-de-linstallation">Suite de l'installation</a></li>
+                  <li><a href="#premier-demarrage-et-configuration-de-base" class="toc-link" data-id="premier-demarrage-et-configuration-de-base">Premier démarrage et configuration de base</a></li>
+                  <li><a href="#configuration-reseau-adresse-ip-fixe" class="toc-link" data-id="configuration-reseau-adresse-ip-fixe">Configuration réseau — Adresse IP fixe</a></li>
+                  <li><a href="#analyse-de-votre-reseau-vmware" class="toc-link depth-3" data-id="analyse-de-votre-reseau-vmware">Analyse de votre réseau VMware</a></li>
+                  <li><a href="#configuration-recommandee" class="toc-link depth-3" data-id="configuration-recommandee">Configuration recommandée</a></li>
+                  <li><a href="#configuration-avancee-vmware-fusion" class="toc-link" data-id="configuration-avancee-vmware-fusion">Configuration avancée VMware Fusion</a></li>
+                  <li><a href="#verification-et-tests-de-connectivite" class="toc-link" data-id="verification-et-tests-de-connectivite">Vérification et tests de connectivité</a></li>
+                  <li><a href="#configuration-dns" class="toc-link" data-id="configuration-dns">Configuration DNS</a></li>
+                  <li><a href="#bonnes-pratiques-de-securite" class="toc-link" data-id="bonnes-pratiques-de-securite">Bonnes pratiques de sécurité</a></li>
+                  <li><a href="#depannage-reseau" class="toc-link" data-id="depannage-reseau">Dépannage réseau</a></li>
+                  <li><a href="#commandes-utiles-powershell-et-cmd" class="toc-link" data-id="commandes-utiles-powershell-et-cmd">Commandes utiles PowerShell et CMD</a></li>
+                  <li><a href="#annexes" class="toc-link" data-id="annexes">Annexes</a></li>
+                  <li><a href="#plages-dadresses-ip-privees-rfc-1918" class="toc-link depth-3" data-id="plages-dadresses-ip-privees-rfc-1918">Plages d'adresses IP privées (RFC 1918)</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

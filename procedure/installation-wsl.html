@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installer et configurer WSL (Windows Subsystem for Linux) | IT-DOC</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="../" data-current-path="/virtualisation/wsl">
+
+  <main data-content>
+    <div class="container">
+      <div class="proc-layout">
+        <div class="proc-main">
+          <a href="../virtualisation/wsl.html" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Retour
+          </a>
+
+          <nav class="breadcrumb">
+            <a href="../index.html">Accueil</a>
+            <span class="sep">/</span>
+            <a href="../virtualisation.html">Virtualisation</a>
+            <span class="sep">/</span>
+            <a href="../virtualisation/wsl.html">WSL</a>
+            <span class="sep">/</span>
+            <span class="current">Installer et configurer WSL (Windows Subsystem for Linux)</span>
+          </nav>
+
+          <div class="proc-header">
+            <h1>Installer et configurer WSL (Windows Subsystem for Linux)</h1>
+            <div class="proc-meta">
+              <span class="badge badge-debutant">Débutant</span>
+              <span class="meta-duration">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                20 minutes
+              </span>
+            <a href="../tags.html?tag=WSL" class="tag">WSL</a>
+            <a href="../tags.html?tag=Windows" class="tag">Windows</a>
+            <a href="../tags.html?tag=Linux" class="tag">Linux</a>
+            <a href="../tags.html?tag=Ubuntu" class="tag">Ubuntu</a>
+            <a href="../tags.html?tag=VS%20Code" class="tag">VS Code</a>
+            </div>
+          </div>
+
+          <article class="prose">
+<h2 id="1-introduction-a-wsl">1. Introduction à WSL</h2>
+<p>WSL (Windows Subsystem for Linux) est une fonctionnalité de Windows 10/11 qui permet d&#39;exécuter un environnement Linux natif directement sous Windows, sans machine virtuelle ni dual boot.</p>
+<p>Contrairement à une VM classique, WSL ne nécessite pas d&#39;hyperviseur lourd : il s&#39;intègre directement au noyau Windows via une couche de compatibilité à l&#39;aide d&#39;Hyper-V, offrant des performances proches d&#39;un Linux natif.</p>
+<blockquote>
+<p><strong>Pourquoi utiliser WSL en infrastructure ?</strong></p>
+<ul>
+<li>Utiliser des outils Linux (bash, ssh, curl, ansible, terraform...) sans quitter Windows</li>
+<li>Tester des scripts Bash/Shell directement sur le poste de travail</li>
+<li>Intégration native avec VS Code, Docker Desktop et Windows Terminal</li>
+</ul>
+</blockquote>
+<h2 id="2-prerequis-compatibilite">2. Prérequis &amp; Compatibilité</h2>
+<h3 id="configuration-requise">Configuration requise</h3>
+<table>
+<thead>
+<tr>
+<th>Élément</th>
+<th>Requis</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Système d&#39;exploitation</td>
+<td>Windows 10 ou Windows 11 version Pro</td>
+</tr>
+<tr>
+<td>Architecture</td>
+<td>x64 ou ARM64</td>
+</tr>
+<tr>
+<td>Virtualisation</td>
+<td>Activée dans le BIOS/UEFI (Intel VT-x ou AMD-V)</td>
+</tr>
+<tr>
+<td>Espace disque</td>
+<td>Minimum 2 Go (selon la distribution choisie)</td>
+</tr>
+</tbody></table>
+<h3 id="activation-hyper-v">Activation Hyper-V</h3>
+<p>Dans la barre de recherche Windows, tapez :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">code</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-code">Activer ou désactiver des fonctionnalités Windows</code></pre>
+</div>
+<p><img src="../images/wsl/screenshot_20260302_141323.jpg" alt="Fonctionnalités Windows" /></p>
+<p>Cochez <strong>Hyper-V</strong> puis cliquez sur OK.</p>
+<p><img src="../images/wsl/screenshot_20260302_141345.jpg" alt="Activation Hyper-V" /></p>
+<blockquote>
+<p>Windows peut demander un redémarrage une fois l&#39;installation terminée.</p>
+</blockquote>
+<h2 id="3-installation-de-wsl">3. Installation de WSL</h2>
+<h3 id="methode-recommandee-windows-10-21h2-windows-11">Méthode recommandée (Windows 10 21H2+ / Windows 11)</h3>
+<p>Depuis Windows 10 version 21H2 et Windows 11, une seule commande suffit pour installer WSL 2 avec Ubuntu. À exécuter dans <strong>PowerShell (Administrateur)</strong> :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">wsl --install</code></pre>
+</div>
+<p>Cette commande installe automatiquement la fonctionnalité WSL, le noyau Linux WSL 2, et Ubuntu par défaut. Un redémarrage est nécessaire.</p>
+<h2 id="4-premier-demarrage-configuration">4. Premier démarrage &amp; configuration</h2>
+<p>Au premier lancement d&#39;Ubuntu, un terminal s&#39;ouvre et lance l&#39;initialisation. Cette étape peut durer quelques minutes.</p>
+<p><img src="../images/wsl/screenshot_20260304_104146.jpg" alt="Initialisation" /></p>
+<h3 id="creation-du-compte-utilisateur">Création du compte utilisateur</h3>
+<p>WSL demande de créer un compte utilisateur Linux indépendant du compte Windows :</p>
+<p><img src="../images/wsl/screenshot_20260304_104801.jpg" alt="Création compte" /></p>
+<blockquote>
+<p><strong>Bon à savoir</strong> — Le nom d&#39;utilisateur Linux peut être différent du compte Windows. Le mot de passe ne s&#39;affiche pas à la saisie, c&#39;est un comportement normal sous Linux.</p>
+</blockquote>
+<h3 id="mise-a-jour-du-systeme">Mise à jour du système</h3>
+<p>Après la création du compte, mettre à jour les paquets :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash">sudo apt update &amp;&amp; sudo apt upgrade -y</code></pre>
+</div>
+<p>Vous êtes maintenant sur votre machine Ubuntu à jour et prête pour vos tests !</p>
+<h2 id="5-commandes-essentielles">5. Commandes essentielles</h2>
+<h3 id="gestion-des-distributions-wsl">Gestion des distributions WSL</h3>
+<p>Ces commandes s&#39;exécutent dans <strong>PowerShell ou le Terminal Windows</strong> (pas dans WSL) :</p>
+<table>
+<thead>
+<tr>
+<th>Commande</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>wsl --list --verbose</code></td>
+<td>Lister les distros installées et leur version WSL</td>
+</tr>
+<tr>
+<td><code>wsl --status</code></td>
+<td>Afficher l&#39;état général de WSL</td>
+</tr>
+<tr>
+<td><code>wsl --shutdown</code></td>
+<td>Arrêter toutes les distros WSL</td>
+</tr>
+<tr>
+<td><code>wsl --set-default Ubuntu</code></td>
+<td>Définir la distro par défaut</td>
+</tr>
+<tr>
+<td><code>wsl --unregister Ubuntu</code></td>
+<td>Supprimer une distro (données supprimées)</td>
+</tr>
+<tr>
+<td><code>wsl --update</code></td>
+<td>Mettre à jour le noyau WSL</td>
+</tr>
+<tr>
+<td><code>wsl --install -d Debian</code></td>
+<td>Installer une autre distribution</td>
+</tr>
+</tbody></table>
+<p><img src="../images/wsl/screenshot_20260304_105326.jpg" alt="Liste des distributions" /></p>
+<p><em>Résultat de <code>wsl --list --verbose</code> — distro active en version 2</em></p>
+<h2 id="6-integration-avec-windows">6. Intégration avec Windows</h2>
+<p>L&#39;un des points forts de WSL est son intégration transparente avec le système de fichiers Windows et les outils natifs.</p>
+<h3 id="acces-aux-fichiers-windows-depuis-wsl">Accès aux fichiers Windows depuis WSL</h3>
+<p>Les disques Windows sont montés automatiquement sous <code>/mnt/</code> :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Accéder au bureau Windows depuis WSL
+cd /mnt/c/Users/VotreNom/Desktop
+
+# Lister les disques montés
+ls /mnt/</code></pre>
+</div>
+<p><img src="../images/wsl/screenshot_20260304_105848.jpg" alt="Accès fichiers Windows" /></p>
+<h3 id="acces-aux-fichiers-wsl-depuis-windows">Accès aux fichiers WSL depuis Windows</h3>
+<p>Les fichiers Linux sont accessibles depuis l&#39;explorateur Windows via :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">code</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-code">\\wsl$\Ubuntu\home\votre_utilisateur</code></pre>
+</div>
+<p>Il est aussi possible de taper <code>\\wsl$</code> directement dans la barre d&#39;adresse de l&#39;explorateur pour voir toutes les distros installées.</p>
+<p><img src="../images/wsl/screenshot_20260304_110123.jpg" alt="Explorateur Windows" /></p>
+<p><em>Accès aux fichiers WSL depuis l&#39;explorateur Windows</em></p>
+<h2 id="7-integration-avec-vs-code">7. Intégration avec VS Code</h2>
+<p>VS Code s&#39;intègre nativement avec WSL via l&#39;extension <strong>WSL</strong>. Le code s&#39;exécute côté Linux tandis que l&#39;interface reste côté Windows.</p>
+<h3 id="installation-de-lextension">Installation de l&#39;extension</h3>
+<p>Dans VS Code, installez l&#39;extension WSL directement depuis le store d&#39;extensions.</p>
+<p><img src="../images/wsl/screenshot_20260304_110901-1.jpg" alt="Extension WSL" /></p>
+<h3 id="ouvrir-une-machine-wsl-dans-vs-code">Ouvrir une machine WSL dans VS Code</h3>
+<p>Une fois l&#39;extension installée, vous aurez à gauche un nouvel onglet <strong>Remote Explorer</strong>. VS Code va directement reconnaître toutes vos distributions.</p>
+<p><img src="../images/wsl/screenshot_20260304_112036.jpg" alt="Remote Explorer" /></p>
+<p>Cliquez sur la flèche et VS Code va installer une extension sur votre WSL. Il va ouvrir une nouvelle fenêtre VS Code, avec le terminal intégré et la possibilité de naviguer dans les dossiers de votre machine WSL.</p>
+<p><img src="../images/wsl/screenshot_20260304_112322.jpg" alt="VS Code dans WSL" /></p>
+<h3 id="recapitulatif-des-avantages-wsl">Récapitulatif des avantages WSL</h3>
+<table>
+<thead>
+<tr>
+<th>Avantage</th>
+<th>Détail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Légèreté</td>
+<td>Pas de VM complète, démarrage en quelques secondes</td>
+</tr>
+<tr>
+<td>Intégration Windows</td>
+<td>Accès bidirectionnel aux fichiers, appels croisés d&#39;exécutables</td>
+</tr>
+<tr>
+<td>Outils natifs Linux</td>
+<td>Bash, SSH, curl, git, python... sans émulation</td>
+</tr>
+<tr>
+<td>VS Code &amp; Docker</td>
+<td>Intégration native et transparente</td>
+</tr>
+<tr>
+<td>Réseau</td>
+<td>Accès au réseau Windows, partage de ports possible</td>
+</tr>
+</tbody></table>
+
+          </article>
+
+          <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--color-border)">
+            <a href="../virtualisation/wsl.html" class="back-link" style="margin:0;padding:8px 16px;background-color:var(--color-bg-secondary);border-radius:8px">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              Retour aux procédures
+            </a>
+          </div>
+        </div>
+
+        <aside class="toc-wrap">
+          <div class="toc-sticky">
+            <div class="toc-box">
+              <h4 class="toc-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                Sommaire
+              </h4>
+              <nav>
+                <ul class="toc-list">
+                  <li><a href="#1-introduction-a-wsl" class="toc-link" data-id="1-introduction-a-wsl">1. Introduction à WSL</a></li>
+                  <li><a href="#2-prerequis-compatibilite" class="toc-link" data-id="2-prerequis-compatibilite">2. Prérequis & Compatibilité</a></li>
+                  <li><a href="#configuration-requise" class="toc-link depth-3" data-id="configuration-requise">Configuration requise</a></li>
+                  <li><a href="#activation-hyper-v" class="toc-link depth-3" data-id="activation-hyper-v">Activation Hyper-V</a></li>
+                  <li><a href="#3-installation-de-wsl" class="toc-link" data-id="3-installation-de-wsl">3. Installation de WSL</a></li>
+                  <li><a href="#methode-recommandee-windows-10-21h2-windows-11" class="toc-link depth-3" data-id="methode-recommandee-windows-10-21h2-windows-11">Méthode recommandée (Windows 10 21H2+ / Windows 11)</a></li>
+                  <li><a href="#4-premier-demarrage-configuration" class="toc-link" data-id="4-premier-demarrage-configuration">4. Premier démarrage & configuration</a></li>
+                  <li><a href="#creation-du-compte-utilisateur" class="toc-link depth-3" data-id="creation-du-compte-utilisateur">Création du compte utilisateur</a></li>
+                  <li><a href="#mise-a-jour-du-systeme" class="toc-link depth-3" data-id="mise-a-jour-du-systeme">Mise à jour du système</a></li>
+                  <li><a href="#5-commandes-essentielles" class="toc-link" data-id="5-commandes-essentielles">5. Commandes essentielles</a></li>
+                  <li><a href="#gestion-des-distributions-wsl" class="toc-link depth-3" data-id="gestion-des-distributions-wsl">Gestion des distributions WSL</a></li>
+                  <li><a href="#6-integration-avec-windows" class="toc-link" data-id="6-integration-avec-windows">6. Intégration avec Windows</a></li>
+                  <li><a href="#acces-aux-fichiers-windows-depuis-wsl" class="toc-link depth-3" data-id="acces-aux-fichiers-windows-depuis-wsl">Accès aux fichiers Windows depuis WSL</a></li>
+                  <li><a href="#acces-aux-fichiers-wsl-depuis-windows" class="toc-link depth-3" data-id="acces-aux-fichiers-wsl-depuis-windows">Accès aux fichiers WSL depuis Windows</a></li>
+                  <li><a href="#7-integration-avec-vs-code" class="toc-link" data-id="7-integration-avec-vs-code">7. Intégration avec VS Code</a></li>
+                  <li><a href="#installation-de-lextension" class="toc-link depth-3" data-id="installation-de-lextension">Installation de l'extension</a></li>
+                  <li><a href="#ouvrir-une-machine-wsl-dans-vs-code" class="toc-link depth-3" data-id="ouvrir-une-machine-wsl-dans-vs-code">Ouvrir une machine WSL dans VS Code</a></li>
+                  <li><a href="#recapitulatif-des-avantages-wsl" class="toc-link depth-3" data-id="recapitulatif-des-avantages-wsl">Récapitulatif des avantages WSL</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

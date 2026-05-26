@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installer GLPI sur Debian | IT-DOC</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="../" data-current-path="/linux/outils-it">
+
+  <main data-content>
+    <div class="container">
+      <div class="proc-layout">
+        <div class="proc-main">
+          <a href="../linux/outils-it.html" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Retour
+          </a>
+
+          <nav class="breadcrumb">
+            <a href="../index.html">Accueil</a>
+            <span class="sep">/</span>
+            <a href="../linux.html">Linux</a>
+            <span class="sep">/</span>
+            <a href="../linux/outils-it.html">Outils IT</a>
+            <span class="sep">/</span>
+            <span class="current">Installer GLPI sur Debian</span>
+          </nav>
+
+          <div class="proc-header">
+            <h1>Installer GLPI sur Debian</h1>
+            <div class="proc-meta">
+              <span class="badge badge-intermediaire">Intermédiaire</span>
+              <span class="meta-duration">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                45 minutes
+              </span>
+            <a href="../tags.html?tag=GLPI" class="tag">GLPI</a>
+            <a href="../tags.html?tag=Debian" class="tag">Debian</a>
+            <a href="../tags.html?tag=Apache" class="tag">Apache</a>
+            <a href="../tags.html?tag=MariaDB" class="tag">MariaDB</a>
+            <a href="../tags.html?tag=PHP" class="tag">PHP</a>
+            </div>
+          </div>
+
+          <article class="prose">
+<h2 id="1-prerequis">1. Prérequis</h2>
+<ul>
+<li>Une machine Debian 13 ou Ubuntu 24.04 LTS</li>
+</ul>
+<h3 id="11-mise-a-jour-du-systeme">1.1 Mise à jour du système</h3>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Met à jour la liste des paquets et installe les versions les plus récentes
+apt update &amp;&amp; apt upgrade -y</code></pre>
+</div>
+<h3 id="12-installation-des-services-web-et-base-de-donnees">1.2 Installation des services Web et Base de données</h3>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Installe le serveur HTTP Apache, le moteur PHP-FPM et MariaDB
+apt install apache2 php8.4-fpm mariadb-server</code></pre>
+</div>
+<h3 id="13-installation-des-extensions-php-indispensables">1.3 Installation des extensions PHP indispensables</h3>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Installe les modules PHP spécifiques nécessaires au fonctionnement de GLPI
+apt install php8.4-{curl,gd,intl,mysql,zip,bcmath,mbstring,xml,bz2}
+
+# Installe l'extension pour permettre la liaison avec un annuaire LDAP
+apt install php8.4-ldap</code></pre>
+</div>
+<h2 id="2-configuration-de-la-base-de-donnees-mariadb">2. Configuration de la base de données MariaDB</h2>
+<h3 id="21-securisation-du-service">2.1 Sécurisation du service</h3>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Lance l'utilitaire de sécurisation (mot de passe root, accès distants, etc.)
+mariadb-secure-installation</code></pre>
+</div>
+<h3 id="22-creation-de-la-base-de-donnees-et-de-lutilisateur">2.2 Création de la base de données et de l&#39;utilisateur</h3>
+<p>Nous créons ici l&#39;espace de stockage et les identifiants que GLPI utilisera pour se connecter à MariaDB.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Connexion à l'interface de commande MariaDB
+mysql -u root -p</code></pre>
+</div>
+<p>Commandes SQL à exécuter :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">sql</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-sql">-- Crée la base de données nommée it_doc_glpi
+CREATE DATABASE it_doc_glpi;
+
+-- Crée l'utilisateur 'glpi' avec son mot de passe et lui donne tous les droits sur la base
+-- Ne pas mettre un mot de passe facile pour une base de données en prod
+GRANT ALL PRIVILEGES ON it_doc_glpi.* TO glpi@localhost IDENTIFIED BY "motdepasse";
+
+-- Applique les nouveaux privilèges et quitte
+FLUSH PRIVILEGES;
+EXIT;</code></pre>
+</div>
+<h2 id="3-telechargement-et-installation-de-glpi">3. Téléchargement et installation de GLPI</h2>
+<h3 id="31-recuperation-des-fichiers">3.1 Récupération des fichiers</h3>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Se place dans le répertoire temporaire et télécharge l'archive officielle
+cd /tmp
+wget https://github.com/glpi-project/glpi/releases/download/11.0.4/glpi-11.0.4.tgz</code></pre>
+</div>
+<h3 id="32-extraction-et-permissions">3.2 Extraction et permissions</h3>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Extrait le contenu dans le répertoire du serveur web
+tar -xvzf glpi-11.0.4.tgz -C /var/www/
+
+# Attribue la propriété du dossier au serveur web (www-data) de façon récursive
+chown www-data:www-data /var/www/glpi -R</code></pre>
+</div>
+<h2 id="4-securisation-de-larborescence-des-fichiers">4. Sécurisation de l&#39;arborescence des fichiers</h2>
+<p>Conformément aux bonnes pratiques, nous sortons les données sensibles de la racine publique du site web.</p>
+<h3 id="41-dossiers-de-configuration-et-de-donnees">4.1 Dossiers de configuration et de données</h3>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Crée et déplace la configuration vers /etc/glpi
+mkdir /etc/glpi
+chown www-data /etc/glpi/
+mv /var/www/glpi/config /etc/glpi
+
+# Crée et déplace les fichiers déposés (attachments) vers /var/lib/glpi
+mkdir /var/lib/glpi
+chown www-data /var/lib/glpi/
+mv /var/www/glpi/files /var/lib/glpi</code></pre>
+</div>
+<h3 id="42-dossier-de-fichiers-de-logs">4.2 Dossier de fichiers de logs</h3>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Crée le dossier destiné à stocker les journaux (logs) de l'application
+mkdir /var/log/glpi
+chown www-data /var/log/glpi</code></pre>
+</div>
+<h2 id="5-configuration-dapache-et-redirection-des-chemins">5. Configuration d&#39;Apache et redirection des chemins</h2>
+<h3 id="51-creation-du-virtualhost">5.1 Création du VirtualHost</h3>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Crée le fichier de configuration pour le site
+nano /etc/apache2/sites-available/glpi.conf</code></pre>
+</div>
+<p>Contenu à intégrer :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">apache</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-apache">&lt;VirtualHost *:80&gt;
+    ServerName 192.168.1.36
+    DocumentRoot /var/www/glpi/public
+
+    &lt;Directory /var/www/glpi/public&gt;
+        Require all granted
+        RewriteEngine On
+        RewriteCond %{HTTP:Authorization} ^(.+)$
+        RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteRule ^(.*)$ index.php [QSA,L]
+    &lt;/Directory&gt;
+
+    &lt;FilesMatch \.php$&gt;
+        SetHandler "proxy:unix:/run/php/php8.4-fpm.sock|fcgi://localhost/"
+    &lt;/FilesMatch&gt;
+&lt;/VirtualHost&gt;</code></pre>
+</div>
+<h3 id="52-declaration-des-nouveaux-repertoires-dans-glpi">5.2 Déclaration des nouveaux répertoires dans GLPI</h3>
+<p>Il faut indiquer à GLPI où vous avez déplacé ses dossiers de configuration et de stockage.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Création du fichier de liaison amont
+nano /var/www/glpi/inc/downstream.php</code></pre>
+</div>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">php</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-php">&lt;?php
+define('GLPI_CONFIG_DIR', '/etc/glpi/');
+if (file_exists(GLPI_CONFIG_DIR . '/local_define.php')) {
+    require_once GLPI_CONFIG_DIR . '/local_define.php';
+}</code></pre>
+</div>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Création du fichier de définition locale
+nano /etc/glpi/local_define.php</code></pre>
+</div>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">php</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-php">&lt;?php
+define('GLPI_VAR_DIR', '/var/lib/glpi/files');
+define('GLPI_LOG_DIR', '/var/log/glpi');</code></pre>
+</div>
+<h2 id="6-liaison-php84-fpm-et-securisation">6. Liaison PHP8.4-FPM et sécurisation</h2>
+<h3 id="61-activation-des-modules">6.1 Activation des modules</h3>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Active les modules de proxy et la configuration PHP-FPM dans Apache
+a2enmod rewrite
+a2enmod proxy_fcgi setenvif
+a2enconf php8.4-fpm
+a2ensite glpi.conf
+systemctl reload apache2</code></pre>
+</div>
+<h3 id="62-securisation-des-cookies-php">6.2 Sécurisation des cookies PHP</h3>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Édite le fichier de configuration PHP pour renforcer la sécurité des sessions
+nano /etc/php/8.4/fpm/php.ini</code></pre>
+</div>
+<p>Modifiez les valeurs suivantes dans le fichier :</p>
+<ul>
+<li><code>session.cookie_httponly = on</code></li>
+<li><code>session.cookie_samesite = Lax</code></li>
+</ul>
+<h3 id="63-application-des-changements">6.3 Application des changements</h3>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">bash</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-bash"># Redémarre les services pour valider toute la configuration
+systemctl restart php8.4-fpm.service
+systemctl restart apache2</code></pre>
+</div>
+<p>GLPI est maintenant installé, vous pouvez y accéder via un navigateur internet avec l&#39;IP de la VM.</p>
+<h2 id="7-configuration-interface-web-glpi">7. Configuration interface web GLPI</h2>
+<p>Une fois l&#39;IP renseignée dans le navigateur, vous arriverez sur cette page :</p>
+<p><img src="../images/glpi/2.png" alt="Page d'accueil GLPI" /></p>
+<p>Cliquez sur <strong>OK</strong></p>
+<p><img src="../images/glpi/3.png" alt="Licence" /></p>
+<p>Cliquez sur <strong>Continuer</strong> pour accepter les termes de la licence GLPI</p>
+<p><img src="../images/glpi/4.png" alt="Installation" /></p>
+<p>Cliquez sur <strong>Installer</strong></p>
+<p><img src="../images/glpi/7.png" alt="Vérification modules" /></p>
+<p>Comme on peut le constater, tous les modules PHP ont bien été installés. Cliquez sur <strong>Continuer</strong></p>
+<p>Nous allons renseigner l&#39;emplacement de notre base de données et un utilisateur pour se connecter.</p>
+<p><img src="../images/glpi/9.png" alt="Configuration BDD" /></p>
+<p>Dans ce cas, nous avons créé notre base de données sur la même machine, en conséquence nous allons écrire <code>localhost</code> puis l&#39;utilisateur que nous avons créé précédemment avec son mot de passe.</p>
+<p><img src="../images/glpi/11.png" alt="Sélection BDD" /></p>
+<p>La connexion à la base de données est bien établie. Sélectionnez la BDD <code>it_doc_glpi</code> que nous avons créée précédemment.</p>
+<p>Patientez pendant que GLPI initialise la base de données.</p>
+<p><img src="../images/glpi/12.png" alt="Initialisation terminée" /></p>
+<p>La base de données est maintenant initialisée. Cliquez sur <strong>Continuer</strong></p>
+<p><img src="../images/glpi/13.png" alt="Support" /></p>
+<p>GLPI vous propose un service de support. Cliquez sur <strong>Continuer</strong></p>
+<p>Nous allons maintenant utiliser GLPI.</p>
+<p><img src="../images/glpi/14.png" alt="Connexion" /></p>
+<p>Connectez-vous avec le compte super admin :</p>
+<ul>
+<li><strong>Identifiant</strong> : glpi</li>
+<li><strong>Mot de passe</strong> : glpi</li>
+</ul>
+<p><img src="../images/glpi/16.png" alt="Dashboard" /></p>
+<p>Nous sommes maintenant dans GLPI qui est bien fonctionnel !</p>
+<p><img src="../images/glpi/17.png" alt="Tableau de bord" /></p>
+<blockquote>
+<p>Comme conseillé, changez le mot de passe d&#39;utilisateur pour ne plus avoir ce message d&#39;alerte.</p>
+</blockquote>
+<p><img src="../images/glpi/18.png" alt="Changement mot de passe" /></p>
+<p><img src="../images/glpi/19.png" alt="Confirmation" /></p>
+
+          </article>
+
+          <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--color-border)">
+            <a href="../linux/outils-it.html" class="back-link" style="margin:0;padding:8px 16px;background-color:var(--color-bg-secondary);border-radius:8px">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              Retour aux procédures
+            </a>
+          </div>
+        </div>
+
+        <aside class="toc-wrap">
+          <div class="toc-sticky">
+            <div class="toc-box">
+              <h4 class="toc-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                Sommaire
+              </h4>
+              <nav>
+                <ul class="toc-list">
+                  <li><a href="#1-prerequis" class="toc-link" data-id="1-prerequis">1. Prérequis</a></li>
+                  <li><a href="#11-mise-a-jour-du-systeme" class="toc-link depth-3" data-id="11-mise-a-jour-du-systeme">1.1 Mise à jour du système</a></li>
+                  <li><a href="#12-installation-des-services-web-et-base-de-donnees" class="toc-link depth-3" data-id="12-installation-des-services-web-et-base-de-donnees">1.2 Installation des services Web et Base de données</a></li>
+                  <li><a href="#13-installation-des-extensions-php-indispensables" class="toc-link depth-3" data-id="13-installation-des-extensions-php-indispensables">1.3 Installation des extensions PHP indispensables</a></li>
+                  <li><a href="#2-configuration-de-la-base-de-donnees-mariadb" class="toc-link" data-id="2-configuration-de-la-base-de-donnees-mariadb">2. Configuration de la base de données MariaDB</a></li>
+                  <li><a href="#21-securisation-du-service" class="toc-link depth-3" data-id="21-securisation-du-service">2.1 Sécurisation du service</a></li>
+                  <li><a href="#22-creation-de-la-base-de-donnees-et-de-lutilisateur" class="toc-link depth-3" data-id="22-creation-de-la-base-de-donnees-et-de-lutilisateur">2.2 Création de la base de données et de l'utilisateur</a></li>
+                  <li><a href="#3-telechargement-et-installation-de-glpi" class="toc-link" data-id="3-telechargement-et-installation-de-glpi">3. Téléchargement et installation de GLPI</a></li>
+                  <li><a href="#31-recuperation-des-fichiers" class="toc-link depth-3" data-id="31-recuperation-des-fichiers">3.1 Récupération des fichiers</a></li>
+                  <li><a href="#32-extraction-et-permissions" class="toc-link depth-3" data-id="32-extraction-et-permissions">3.2 Extraction et permissions</a></li>
+                  <li><a href="#4-securisation-de-larborescence-des-fichiers" class="toc-link" data-id="4-securisation-de-larborescence-des-fichiers">4. Sécurisation de l'arborescence des fichiers</a></li>
+                  <li><a href="#41-dossiers-de-configuration-et-de-donnees" class="toc-link depth-3" data-id="41-dossiers-de-configuration-et-de-donnees">4.1 Dossiers de configuration et de données</a></li>
+                  <li><a href="#42-dossier-de-fichiers-de-logs" class="toc-link depth-3" data-id="42-dossier-de-fichiers-de-logs">4.2 Dossier de fichiers de logs</a></li>
+                  <li><a href="#5-configuration-dapache-et-redirection-des-chemins" class="toc-link" data-id="5-configuration-dapache-et-redirection-des-chemins">5. Configuration d'Apache et redirection des chemins</a></li>
+                  <li><a href="#51-creation-du-virtualhost" class="toc-link depth-3" data-id="51-creation-du-virtualhost">5.1 Création du VirtualHost</a></li>
+                  <li><a href="#52-declaration-des-nouveaux-repertoires-dans-glpi" class="toc-link depth-3" data-id="52-declaration-des-nouveaux-repertoires-dans-glpi">5.2 Déclaration des nouveaux répertoires dans GLPI</a></li>
+                  <li><a href="#6-liaison-php84-fpm-et-securisation" class="toc-link" data-id="6-liaison-php84-fpm-et-securisation">6. Liaison PHP8.4-FPM et sécurisation</a></li>
+                  <li><a href="#61-activation-des-modules" class="toc-link depth-3" data-id="61-activation-des-modules">6.1 Activation des modules</a></li>
+                  <li><a href="#62-securisation-des-cookies-php" class="toc-link depth-3" data-id="62-securisation-des-cookies-php">6.2 Sécurisation des cookies PHP</a></li>
+                  <li><a href="#63-application-des-changements" class="toc-link depth-3" data-id="63-application-des-changements">6.3 Application des changements</a></li>
+                  <li><a href="#7-configuration-interface-web-glpi" class="toc-link" data-id="7-configuration-interface-web-glpi">7. Configuration interface web GLPI</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

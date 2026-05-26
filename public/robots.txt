@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://it-doc.fr/sitemap-index.xml

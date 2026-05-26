@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page introuvable | IT-DOC</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .notfound {
+      min-height: calc(100vh - 64px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .notfound-inner { text-align: center; max-width: 480px; }
+    .notfound-code {
+      font-family: var(--font-display);
+      font-size: 8rem;
+      font-weight: 700;
+      color: var(--color-border);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .notfound h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: 12px;
+    }
+    .notfound p {
+      color: var(--color-text-secondary);
+      margin-bottom: 32px;
+    }
+    .notfound-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: center;
+    }
+    @media (min-width: 640px) { .notfound-actions { flex-direction: row; } }
+    .notfound-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .notfound-btn svg { width: 16px; height: 16px; }
+    .btn-primary { background-color: #0078D4; color: white; }
+    .btn-primary:hover { background-color: #006abc; }
+    .btn-secondary { background-color: var(--color-bg-secondary); color: var(--color-text-primary); }
+    .btn-secondary:hover { background-color: var(--color-bg-tertiary); }
+  </style>
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="" data-current-path="/404">
+
+  <main data-content>
+    <div class="notfound">
+      <div class="notfound-inner">
+        <div class="notfound-code">404</div>
+        <h1>Page introuvable</h1>
+        <p>La page que tu cherches n'existe pas ou a été déplacée.</p>
+        <div class="notfound-actions">
+          <a href="index.html" class="notfound-btn btn-primary">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Accueil
+          </a>
+          <a href="tags.html" class="notfound-btn btn-secondary">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+            Explorer les tags
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script>
+    // 404 page: hide sidebar by removing the layout flex wrapping
+    document.body.dataset.noSidebar = '1';
+  </script>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

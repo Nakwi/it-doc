@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation et configuration des Services Bureau à distance (RDS) | IT-DOC</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="../" data-current-path="/windows-server/bureau-a-distance">
+
+  <main data-content>
+    <div class="container">
+      <div class="proc-layout">
+        <div class="proc-main">
+          <a href="../windows-server/bureau-a-distance.html" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Retour
+          </a>
+
+          <nav class="breadcrumb">
+            <a href="../index.html">Accueil</a>
+            <span class="sep">/</span>
+            <a href="../windows-server.html">Windows Server</a>
+            <span class="sep">/</span>
+            <a href="../windows-server/bureau-a-distance.html">Bureau à distance</a>
+            <span class="sep">/</span>
+            <span class="current">Installation et configuration des Services Bureau à distance (RDS)</span>
+          </nav>
+
+          <div class="proc-header">
+            <h1>Installation et configuration des Services Bureau à distance (RDS)</h1>
+            <div class="proc-meta">
+              <span class="badge badge-intermediaire">Intermédiaire</span>
+              <span class="meta-duration">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                90 minutes
+              </span>
+            <a href="../tags.html?tag=RDS" class="tag">RDS</a>
+            <a href="../tags.html?tag=RemoteApp" class="tag">RemoteApp</a>
+            <a href="../tags.html?tag=Windows%20Server" class="tag">Windows Server</a>
+            <a href="../tags.html?tag=Bureau%20%C3%A0%20distance" class="tag">Bureau à distance</a>
+            <a href="../tags.html?tag=MSIX" class="tag">MSIX</a>
+            </div>
+          </div>
+
+          <article class="prose">
+<h2 id="1-prerequis">1. Prérequis</h2>
+<h3 id="machine-1-serveur">Machine 1 — Serveur</h3>
+<ul>
+<li>OS : Windows Server 2022</li>
+<li>RAM : 4 Go</li>
+<li>Stockage : 40 Go</li>
+<li>IP statique : 192.168.10.10</li>
+</ul>
+<h3 id="machine-2-client">Machine 2 — Client</h3>
+<ul>
+<li>OS : Windows 11</li>
+<li>RAM : 6 Go</li>
+<li>Stockage : 80 Go</li>
+<li>IP statique : 192.168.10.50</li>
+</ul>
+<h2 id="2-installation-des-services-bureau-a-distance">2. Installation des services Bureau à distance</h2>
+<p>Créer une machine Windows Server que vous ajouterez à votre domaine avec un nom spécifique, pour ma part <code>SRV-APP</code>.</p>
+<p><img src="../images/rds/_page_1_Picture_3.jpeg" alt="Création de la VM SRV-APP" /></p>
+<p>Une fois connecté sur le serveur avec un compte disposant des droits d&#39;administration, ouvrez le Gestionnaire de serveur. Cliquez sur <strong>Gérer</strong> puis sur <strong>Ajouter des rôles et fonctionnalités</strong>.</p>
+<p><img src="../images/rds/_page_1_Picture_5.jpeg" alt="Gestionnaire de serveur" /></p>
+<p>Sélectionnez <strong>Installation basée sur un rôle ou une fonctionnalité</strong>.</p>
+<p><img src="../images/rds/_page_2_Picture_5.jpeg" alt="Sélection du type d'installation" /></p>
+<p>Cochez <strong>Services Bureau à distance</strong>.</p>
+<p><img src="../images/rds/_page_2_Picture_7.jpeg" alt="Sélection du rôle RDS" /></p>
+<p>Dans les fonctionnalités, cochez <strong>Assistance à distance</strong>.</p>
+<p><img src="../images/rds/_page_3_Picture_5.jpeg" alt="Assistance à distance" /></p>
+<p>Dans les services de rôles, cochez tous les services <strong>sauf</strong> &quot;Hôte de virtualisation des services Bureau à distance&quot;.</p>
+<p><img src="../images/rds/_page_3_Picture_7.jpeg" alt="Services de rôles" /></p>
+<p>Confirmez et attendez la fin de l&#39;installation. Une fois le serveur redémarré, vous aurez accès aux services via le Gestionnaire de serveur.</p>
+<p><img src="../images/rds/_page_4_Figure_5.jpeg" alt="Installation terminée" /></p>
+<p>Pour pouvoir utiliser ce service, vous devez ajouter un dernier service. Relancez <strong>Ajouter des rôles ou des fonctionnalités</strong> et sélectionnez cette fois <strong>Installation des services Bureau à distance</strong>.</p>
+<p><img src="../images/rds/_page_4_Figure_7.jpeg" alt="Installation services Bureau à distance" /></p>
+<p>Sélectionnez <strong>Démarrage rapide</strong> car nous allons mettre tous les services sur le même serveur.</p>
+<p><img src="../images/rds/_page_5_Figure_5.jpeg" alt="Démarrage rapide" /></p>
+<p>Sélectionnez <strong>Déploiement basé sur une session</strong> car on va se connecter en RDS via les utilisateurs présents dans l&#39;AD.</p>
+<p><img src="../images/rds/_page_5_Picture_7.jpeg" alt="Déploiement basé sur une session" /></p>
+<p>Sélectionnez votre serveur puis cliquez sur <strong>Déployer</strong>. Le service va s&#39;installer sur votre serveur.</p>
+<p><img src="../images/rds/_page_6_Figure_4.jpeg" alt="Sélection du serveur" /></p>
+<p>On peut maintenant voir dans les Services Bureau à distance différents outils que nous allons paramétrer.</p>
+<p><img src="../images/rds/_page_6_Picture_6.jpeg" alt="Vue d'ensemble RDS" /></p>
+<p>Vérifiez dans les propriétés système que l&#39;Assistance à distance et le Bureau à distance sont autorisés.</p>
+<p><img src="../images/rds/_page_7_Picture_5.jpeg" alt="Propriétés système" /></p>
+<h2 id="3-configuration-de-la-passerelle-des-services-rds">3. Configuration de la Passerelle des services RDS</h2>
+<p>On va faire en sorte que les machines qui se connectent en RDS passent bien par notre serveur. Sur la vue d&#39;ensemble, cliquez sur <strong>Passerelle des services</strong>.</p>
+<p><img src="../images/rds/_page_8_Figure_3.jpeg" alt="Passerelle des services" /></p>
+<hr>
+<p>Sélectionnez votre serveur puis, pour le nom du certificat, entrez le nom de votre machine + le nom de domaine.</p>
+<p><img src="../images/rds/_page_9_Picture_5.jpeg" alt="Configuration certificat" /></p>
+<hr>
+<p>Confirmez puis attendez la fin du téléchargement.</p>
+<p><img src="../images/rds/_page_9_Picture_7.jpeg" alt="Téléchargement en cours" /></p>
+<hr>
+<p>Avant de fermer, cliquez sur <strong>Configurer le certificat</strong>.</p>
+<p><img src="../images/rds/_page_10_Figure_5.jpeg" alt="Configurer le certificat" /></p>
+<hr>
+<p>Cliquez sur <strong>Créer un certificat…</strong>, pour le nom mettez le même que le certificat SSL, stockez-le et cochez la case en dessous.</p>
+<p><img src="../images/rds/_page_10_Picture_7.jpeg" alt="Création du certificat" /></p>
+<hr>
+<p>Cliquez sur <strong>Appliquer</strong>. Répétez la même opération sur les 3 autres services en sélectionnant <strong>Sélectionner un certificat existant…</strong> et en prenant le certificat que vous venez de créer + son mot de passe (appliquez les certificats un par un). Vous obtenez ceci à la fin :</p>
+<p><img src="../images/rds/_page_11_Figure_5.jpeg" alt="Certificats appliqués" /></p>
+<hr>
+<p>Cliquez sur <strong>OK</strong>, votre passerelle des services est maintenant configurée. Dans <strong>Tâches</strong> → <strong>Modifier les propriétés de déploiement</strong> :</p>
+<p><img src="../images/rds/_page_12_Picture_5.jpeg" alt="Propriétés de déploiement" /></p>
+<hr>
+<p>Dans <strong>Passerelle des serveurs</strong>, votre serveur doit bien être précisé. Si la méthode d&#39;ouverture de session n&#39;est pas comme celle affichée ci-dessous, modifiez-la.</p>
+<p><img src="../images/rds/_page_12_Picture_7.jpeg" alt="Méthode d'ouverture de session" /></p>
+<h2 id="4-configurer-le-gestionnaire-de-licences">4. Configurer le gestionnaire de licences</h2>
+<p>Toujours dans la vue d&#39;ensemble des Services Bureau à distance, cliquez sur <strong>Gestionnaire de licences</strong>. Sélectionnez votre serveur puis confirmez, attendez la fin du téléchargement.</p>
+<p><img src="../images/rds/_page_13_Picture_6.jpeg" alt="Gestionnaire de licences" /></p>
+<hr>
+<p>Cliquez sur <strong>Vérifier les propriétés du Gestionnaire de licences des services Bureau à distance pour le déploiement</strong>. On va se connecter via nos utilisateurs présents dans l&#39;AD, sélectionnez <strong>Par utilisateur</strong> puis <strong>Appliquer</strong> et <strong>OK</strong>.</p>
+<p><img src="../images/rds/_page_14_Figure_5.jpeg" alt="Configuration par utilisateur" /></p>
+<hr>
+<p>Votre Gestionnaire de licences est maintenant configuré.</p>
+<p><img src="../images/rds/_page_14_Picture_7.jpeg" alt="Gestionnaire configuré" /></p>
+<h2 id="5-configurer-la-collection-remoteapp">5. Configurer la collection RemoteApp</h2>
+<p>Dans l&#39;onglet <strong>Collections</strong>, il y en a une créée par défaut, supprimez-la pour créer notre collection. Dans <strong>Tâches</strong> → <strong>Créer une collection de sessions</strong>.</p>
+<p><img src="../images/rds/_page_15_Picture_3.jpeg" alt="Suppression collection par défaut" /></p>
+<p><img src="../images/rds/_page_15_Picture_5.jpeg" alt="Créer une collection" /></p>
+<hr>
+<p>Nommez-la comme vous voulez.</p>
+<p><img src="../images/rds/_page_15_Picture_7.jpeg" alt="Nommage de la collection" /></p>
+<hr>
+<p>Sélectionnez votre serveur puis dans <strong>Groupes utilisateurs</strong>, sélectionnez les groupes qui pourront avoir accès à l&#39;interface web pour lancer les applications. Pour ma part j&#39;ai mis tous les utilisateurs du domaine, mais on peut restreindre l&#39;accès si besoin.</p>
+<p><img src="../images/rds/_page_16_Figure_1.jpeg" alt="Groupes utilisateurs" /></p>
+<hr>
+<p>Décochez la case <strong>Activer les disques de profil utilisateur</strong>.</p>
+<p><img src="../images/rds/_page_16_Picture_3.jpeg" alt="Disques de profil" /></p>
+<hr>
+<p>Confirmez, une fois le téléchargement terminé vous pouvez fermer.</p>
+<p><img src="../images/rds/_page_17_Figure_1.jpeg" alt="Installation collection" /></p>
+<hr>
+<p>On va maintenant sélectionner les applications que l&#39;on veut que nos utilisateurs puissent utiliser à distance. Dans <strong>Collections</strong>, sélectionnez celle que vous venez de créer puis <strong>Publier des programmes RemoteApp</strong>.</p>
+<p><img src="../images/rds/_page_17_Picture_3.jpeg" alt="Publier RemoteApp" /></p>
+<h2 id="6-creation-du-fichier-msix">6. Création du fichier MSIX</h2>
+<p>Nous allons maintenant créer un fichier MSIX pour 7-Zip. Vous pourrez faire ça sur autant d&#39;applications que vous voulez.</p>
+<p>Sur la machine client, allez sur le Microsoft Store et installez <strong>MSIX packaging tool</strong>.</p>
+<p><img src="../images/rds/_page_18_Picture_7.jpeg" alt="MSIX Packaging Tool" /></p>
+<hr>
+<p>Sélectionnez <strong>Package d&#39;installation</strong>.</p>
+<p><img src="../images/rds/_page_18_Picture_9.jpeg" alt="Package d'installation" /></p>
+<hr>
+<p>Sélectionnez <strong>Créer un package sur cet ordinateur</strong>.</p>
+<p><img src="../images/rds/_page_19_Figure_1.jpeg" alt="Créer un package local" /></p>
+<hr>
+<p>Nous allons utiliser 7-Zip, récupérez le <code>.exe</code> sur un navigateur et indiquez-le dans l&#39;utilitaire.</p>
+<p><img src="../images/rds/_page_19_Picture_3.jpeg" alt="Sélection de l'exécutable" /></p>
+<hr>
+<p>Renseignez les différentes informations obligatoires dans le formulaire.</p>
+<p><img src="../images/rds/_page_20_Picture_4.jpeg" alt="Formulaire d'informations" /></p>
+<hr>
+<p>Faites <strong>Suivant</strong> pour arriver à cette page puis <strong>Créer</strong> le fichier MSIX.</p>
+<p><img src="../images/rds/_page_20_Picture_6.jpeg" alt="Création du fichier MSIX" /></p>
+<hr>
+<p>Le fichier <code>.msix</code> est désormais créé, déplacez-le vers votre serveur RDS pour continuer la configuration.</p>
+<p><img src="../images/rds/_page_21_Picture_5.jpeg" alt="Fichier MSIX créé" /></p>
+<h2 id="7-signature-du-fichier-msix-auto-signe">7. Signature du fichier MSIX (auto-signé)</h2>
+<p>Pour pouvoir utiliser le logiciel sur votre serveur RDS, vous devez créer un certificat auto-signé. Les commandes PowerShell suivantes sont à adapter selon le logiciel que vous installez.</p>
+<p>Créez le certificat auto-signé :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">$cert = New-SelfSignedCertificate -Type CodeSigningCert -Subject "CN=7zip" -CertStoreLocation Cert:\LocalMachine\My</code></pre>
+</div>
+<p>Exportez la clé publique du certificat dans un fichier <code>.cer</code> pour pouvoir l&#39;installer sur d&#39;autres machines :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Export-Certificate -Cert $cert -FilePath C:\Packages\7zip.cer</code></pre>
+</div>
+<p>Convertissez le mot de passe en SecureString, puis exportez le certificat avec sa clé privée dans un fichier <code>.pfx</code> protégé par mot de passe :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">$pwd = ConvertTo-SecureString -String "1234" -Force -AsPlainText
+Export-PfxCertificate -Cert $cert -FilePath C:\Packages\7zip.pfx -Password $pwd</code></pre>
+</div>
+<p>Signez le package MSIX avec le certificat <code>.pfx</code> afin qu&#39;il puisse être installé et reconnu comme application fiable :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">signtool sign /fd SHA256 /f C:\Packages\7zip.pfx /p 1234 "C:\Packages\7zip.msix"</code></pre>
+</div>
+<p>Installez le package MSIX pour tous les utilisateurs du système :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Add-AppxProvisionedPackage -Online -PackagePath C:\Packages\7zip.msix -SkipLicense</code></pre>
+</div>
+<p>Publiez 7-Zip en application RemoteApp sur le serveur RDS :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">New-RDRemoteApp -CollectionName "RemoteApp" -Alias "7zip" -DisplayName "7-Zip" -FilePath "C:\Windows\System32\cmd.exe" -CommandLineSetting Require -RequiredCommandLine '/c start "" shell:AppsFolder\7zip_kc7rvhsejyqfe!App'</code></pre>
+</div>
+<p>Redémarrez le serveur puis allez de nouveau sur l&#39;interface graphique de RDS, onglet <strong>Collections</strong> → <strong>RemoteApp</strong>. Vous devez normalement voir votre application.</p>
+<p><img src="../images/rds/_page_24_Picture_7.jpeg" alt="Application publiée" /></p>
+<blockquote>
+<p>Répétez les étapes 6 et 7 pour chaque application supplémentaire à publier.</p>
+</blockquote>
+<h2 id="8-connexion-aux-programmes-remoteapp">8. Connexion aux programmes RemoteApp</h2>
+<p>Votre serveur est maintenant opérationnel. Sur votre machine client, tapez dans un navigateur :</p>
+<p><strong><a href="https://nom\_du\_serveur.nom\_du\_domaine/rdweb" target="_blank" rel="noopener noreferrer nofollow">https://nom\_du\_serveur.nom\_du\_domaine/rdweb</a></strong></p>
+<p>Renseignez les informations de connexion de votre utilisateur puis cliquez sur <strong>S&#39;inscrire</strong>.</p>
+<p><img src="../images/rds/_page_25_Picture_6.jpeg" alt="Page de connexion RDWeb" /></p>
+<hr>
+<p>Vous voyez les applications de votre collection. Sélectionnez-en une et dans <strong>Téléchargements</strong>, ouvrez le fichier <code>.rdp</code>.</p>
+<p><img src="../images/rds/_page_25_Picture_8.jpeg" alt="Applications disponibles" /></p>
+<hr>
+<p>Cliquez sur <strong>Connexion</strong> et renseignez vos identifiants en précisant votre nom de domaine. Vous voilà connecté à votre application — les ressources sont stockées sur le serveur RDS, la machine cliente ne consomme pas plus de ressources.</p>
+<p><img src="../images/rds/_page_26_Picture_6.jpeg" alt="Connexion RemoteApp active" /></p>
+<p><img src="../images/rds/_page_26_Picture_7.jpeg" alt="Application en cours d'utilisation" /></p>
+<h2 id="9-annexes">9. Annexes</h2>
+<h3 id="architecture-simplifiee">Architecture simplifiée</h3>
+<p><img src="../images/rds/_page_27_Figure_6.jpeg" alt="Architecture RDS simplifiée" /></p>
+<h3 id="bonus-mise-en-place-dune-troisieme-application">Bonus — Mise en place d&#39;une troisième application</h3>
+<p>Après avoir répété les parties 6 et 7, la nouvelle application apparaît dans <strong>Collections</strong> → <strong>RemoteApp</strong>.</p>
+<p><img src="../images/rds/_page_28_Picture_7.jpeg" alt="Troisième application publiée" /></p>
+<hr>
+<p>Elle est également visible sur l&#39;interface web côté client.</p>
+<p><img src="../images/rds/_page_29_Picture_3.jpeg" alt="Interface web client" /></p>
+<p><img src="../images/rds/_page_29_Picture_4.jpeg" alt="Application sur client" /></p>
+<h3 id="desinstallation-dun-package-msix">Désinstallation d&#39;un package MSIX</h3>
+<p>Pour désinstaller une application (exemple avec 7-Zip) :</p>
+<p>Désinstaller pour tous les utilisateurs :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-AppxPackage -AllUsers 7zip | Remove-AppxPackage -AllUsers</code></pre>
+</div>
+<p>Supprimer le provisionnement (important en environnement serveur) :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -like "7zip"} | Remove-AppxProvisionedPackage -Online</code></pre>
+</div>
+
+          </article>
+
+          <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--color-border)">
+            <a href="../windows-server/bureau-a-distance.html" class="back-link" style="margin:0;padding:8px 16px;background-color:var(--color-bg-secondary);border-radius:8px">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              Retour aux procédures
+            </a>
+          </div>
+        </div>
+
+        <aside class="toc-wrap">
+          <div class="toc-sticky">
+            <div class="toc-box">
+              <h4 class="toc-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                Sommaire
+              </h4>
+              <nav>
+                <ul class="toc-list">
+                  <li><a href="#1-prerequis" class="toc-link" data-id="1-prerequis">1. Prérequis</a></li>
+                  <li><a href="#machine-1-serveur" class="toc-link depth-3" data-id="machine-1-serveur">Machine 1 — Serveur</a></li>
+                  <li><a href="#machine-2-client" class="toc-link depth-3" data-id="machine-2-client">Machine 2 — Client</a></li>
+                  <li><a href="#2-installation-des-services-bureau-a-distance" class="toc-link" data-id="2-installation-des-services-bureau-a-distance">2. Installation des services Bureau à distance</a></li>
+                  <li><a href="#3-configuration-de-la-passerelle-des-services-rds" class="toc-link" data-id="3-configuration-de-la-passerelle-des-services-rds">3. Configuration de la Passerelle des services RDS</a></li>
+                  <li><a href="#4-configurer-le-gestionnaire-de-licences" class="toc-link" data-id="4-configurer-le-gestionnaire-de-licences">4. Configurer le gestionnaire de licences</a></li>
+                  <li><a href="#5-configurer-la-collection-remoteapp" class="toc-link" data-id="5-configurer-la-collection-remoteapp">5. Configurer la collection RemoteApp</a></li>
+                  <li><a href="#6-creation-du-fichier-msix" class="toc-link" data-id="6-creation-du-fichier-msix">6. Création du fichier MSIX</a></li>
+                  <li><a href="#7-signature-du-fichier-msix-auto-signe" class="toc-link" data-id="7-signature-du-fichier-msix-auto-signe">7. Signature du fichier MSIX (auto-signé)</a></li>
+                  <li><a href="#8-connexion-aux-programmes-remoteapp" class="toc-link" data-id="8-connexion-aux-programmes-remoteapp">8. Connexion aux programmes RemoteApp</a></li>
+                  <li><a href="#9-annexes" class="toc-link" data-id="9-annexes">9. Annexes</a></li>
+                  <li><a href="#architecture-simplifiee" class="toc-link depth-3" data-id="architecture-simplifiee">Architecture simplifiée</a></li>
+                  <li><a href="#bonus-mise-en-place-dune-troisieme-application" class="toc-link depth-3" data-id="bonus-mise-en-place-dune-troisieme-application">Bonus — Mise en place d'une troisième application</a></li>
+                  <li><a href="#desinstallation-dun-package-msix" class="toc-link depth-3" data-id="desinstallation-dun-package-msix">Désinstallation d'un package MSIX</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linux | IT-DOC</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="" data-current-path="/linux">
+
+  <main data-content>
+    <div class="container" style="max-width: 900px;">
+      <nav class="breadcrumb">
+        <a href="index.html">Accueil</a>
+        <span class="sep">/</span>
+        <span class="current">Linux</span>
+      </nav>
+
+      <div class="page-header">
+        <h1 id="cat-title"></h1>
+        <p id="cat-desc"></p>
+        <div class="page-header-meta" id="cat-meta"></div>
+      </div>
+
+      <div class="subcat-list" id="subcat-list"></div>
+    </div>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+  <script>window.__CATEGORY_ID__ = 'linux';</script>
+  <script src="js/category-page.js"></script>
+</body>
+</html>

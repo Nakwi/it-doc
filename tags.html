@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tags | IT-DOC</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .tags-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .tags-header-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background-color: rgba(0,120,212,0.1);
+      display: flex; align-items: center; justify-content: center;
+      color: #0078D4;
+    }
+    .tags-header-icon svg { width: 24px; height: 24px; }
+    .tags-header h1 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+    .tags-header p { color: var(--color-text-secondary); }
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background-color: var(--color-bg-secondary);
+      border: 1px solid var(--color-border);
+      border-radius: 9999px;
+      color: var(--color-text-primary);
+      font-weight: 500;
+      transition: background-color 0.15s;
+    }
+    .tag-pill:hover { background-color: var(--color-bg-tertiary); }
+    .tag-count {
+      font-size: 0.75rem;
+      background-color: var(--color-bg-tertiary);
+      color: var(--color-text-secondary);
+      padding: 2px 8px;
+      border-radius: 9999px;
+    }
+    .back-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 16px;
+    }
+    .back-tag:hover { color: var(--color-text-primary); }
+    .back-tag svg { width: 16px; height: 16px; }
+  </style>
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="" data-current-path="/tags">
+
+  <main data-content>
+    <div class="container" style="max-width: 1100px;">
+      <div id="tags-view"></div>
+    </div>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const selectedTag = params.get('tag');
+      const view = document.getElementById('tags-view');
+      const procs = window.__PROCEDURES__;
+      const cats = window.__CATEGORIES__;
+
+      if (selectedTag) {
+        // Detail view: procedures matching this tag
+        const matches = procs.filter(p => p.tags && p.tags.some(t => t.toLowerCase() === selectedTag.toLowerCase()));
+        document.title = `Tag: ${selectedTag} | IT-DOC`;
+        view.innerHTML = `
+          <a href="tags.html" class="back-tag">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Tous les tags
+          </a>
+          <div class="tags-header">
+            <div class="tags-header-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+            </div>
+            <div>
+              <h1>${selectedTag}</h1>
+              <p>${matches.length} procédure${matches.length > 1 ? 's' : ''}</p>
+            </div>
+          </div>
+          <div class="proc-grid full">
+            ${matches.map(p => {
+              const cat = cats.find(c => c.id === p.category);
+              return `
+                <a href="procedure/${p.id}.html" class="proc-card">
+                  <div class="proc-card-cover">
+                    ${p.cover
+                      ? `<img src="${p.cover}" alt="${p.title}" />`
+                      : `<div class="proc-card-cover-fallback">${cat?.emoji || '📄'}</div>`}
+                  </div>
+                  <div class="proc-card-body">
+                    <div class="proc-card-cat">
+                      <span class="dot" style="background-color: ${cat?.color}"></span>
+                      <span>${cat?.label}</span>
+                    </div>
+                    <h3 class="proc-card-title">${p.title}</h3>
+                    <div class="proc-card-footer">
+                      <span class="badge badge-${p.level.toLowerCase().replace(/é/g, 'e')}">${p.level}</span>
+                      <span class="proc-card-duration">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        ${p.duration} min
+                      </span>
+                    </div>
+                  </div>
+                </a>`;
+            }).join('')}
+          </div>`;
+      } else {
+        // Cloud view: all tags
+        const counts = {};
+        procs.forEach(p => (p.tags || []).forEach(t => { counts[t] = (counts[t] || 0) + 1; }));
+        const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+        view.innerHTML = `
+          <div class="tags-header">
+            <div class="tags-header-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+            </div>
+            <div>
+              <h1>Tags</h1>
+              <p>${sorted.length} tags disponibles</p>
+            </div>
+          </div>
+          <div class="tag-cloud">
+            ${sorted.map(([tag, count]) => `
+              <a href="tags.html?tag=${encodeURIComponent(tag)}" class="tag-pill">
+                <span>${tag}</span>
+                <span class="tag-count">${count}</span>
+              </a>`).join('')}
+          </div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation et configuration initiale de pfSense CE sur VMware | IT-DOC</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="../" data-current-path="/securite/pare-feu">
+
+  <main data-content>
+    <div class="container">
+      <div class="proc-layout">
+        <div class="proc-main">
+          <a href="../securite/pare-feu.html" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Retour
+          </a>
+
+          <nav class="breadcrumb">
+            <a href="../index.html">Accueil</a>
+            <span class="sep">/</span>
+            <a href="../securite.html">Sécurité</a>
+            <span class="sep">/</span>
+            <a href="../securite/pare-feu.html">Pare-feu</a>
+            <span class="sep">/</span>
+            <span class="current">Installation et configuration initiale de pfSense CE sur VMware</span>
+          </nav>
+
+          <div class="proc-header">
+            <h1>Installation et configuration initiale de pfSense CE sur VMware</h1>
+            <div class="proc-meta">
+              <span class="badge badge-debutant">Débutant</span>
+              <span class="meta-duration">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                60 minutes
+              </span>
+            <a href="../tags.html?tag=pfSense" class="tag">pfSense</a>
+            <a href="../tags.html?tag=Firewall" class="tag">Firewall</a>
+            <a href="../tags.html?tag=VMware" class="tag">VMware</a>
+            <a href="../tags.html?tag=Pare-feu" class="tag">Pare-feu</a>
+            <a href="../tags.html?tag=R%C3%A9seau" class="tag">Réseau</a>
+            </div>
+          </div>
+
+          <article class="prose">
+<h2 id="1-introduction-a-pfsense-et-au-role-du-firewall">1. Introduction à pfSense et au rôle du Firewall</h2>
+<h3 id="quest-ce-que-pfsense-ce">Qu&#39;est-ce que pfSense CE ?</h3>
+<p>pfSense CE (Community Edition) est un logiciel <em>firewall</em> (pare-feu) basé sur FreeBSD. Il est gratuit, open source et extrêmement complet. Il transforme un ordinateur (physique ou virtuel) en un routeur/firewall professionnel.</p>
+<h3 id="le-role-dun-firewall">Le rôle d&#39;un Firewall</h3>
+<p>Un <em>firewall</em> agit comme un <strong>gardien</strong> entre votre réseau interne et un réseau externe non sûr comme Internet.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Rôle</th>
+<th align="left">Explication</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Filtrage</strong></td>
+<td align="left">Il examine chaque paquet de données entrant et sortant.</td>
+</tr>
+<tr>
+<td align="left"><strong>Autorisation / Blocage</strong></td>
+<td align="left">Il décide, selon des règles que vous définissez, si le paquet doit passer ou être bloqué.</td>
+</tr>
+<tr>
+<td align="left"><strong>Protection</strong></td>
+<td align="left">Il empêche les intrusions et les accès non sollicités venant de l&#39;extérieur.</td>
+</tr>
+</tbody></table>
+<h3 id="pourquoi-utiliser-pfsense-en-formation">Pourquoi utiliser pfSense en formation ?</h3>
+<p>pfSense est idéal pour un laboratoire virtuel car il est <strong>complet</strong> (VPN, filtrage avancé, DHCP...), <strong>pédagogique</strong> (interface logique pour comprendre l&#39;architecture réseau) et <strong>standard du secteur</strong> (très proche des solutions utilisées en entreprise).</p>
+<h2 id="2-prerequis-pour-linstallation">2. Prérequis pour l&#39;installation</h2>
+<h3 id="logiciel-et-fichiers">Logiciel et fichiers</h3>
+<ul>
+<li><strong>VMware Workstation Pro</strong> : une version récente est recommandée.</li>
+<li><strong>Image ISO pfSense CE</strong> : à télécharger depuis le site officiel de Netgate.</li>
+</ul>
+<h3 id="configuration-minimale-de-la-vm">Configuration minimale de la VM</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Composant</th>
+<th align="left">Recommandation</th>
+<th align="left">Détails</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Interfaces réseau</strong></td>
+<td align="left">2 minimum</td>
+<td align="left">1 WAN (vers Internet simulé) et 1 LAN (réseau interne). Indispensable pour un firewall.</td>
+</tr>
+<tr>
+<td align="left"><strong>RAM</strong></td>
+<td align="left">2 Go</td>
+<td align="left">512 Mo est le minimum, 2 Go assure un bon confort.</td>
+</tr>
+<tr>
+<td align="left"><strong>CPU</strong></td>
+<td align="left">2 cœurs</td>
+<td align="left">Un seul cœur est suffisant.</td>
+</tr>
+<tr>
+<td align="left"><strong>Disque virtuel</strong></td>
+<td align="left">20 Go</td>
+<td align="left">Largement suffisant en SCSI.</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>Sans au moins deux cartes réseau, pfSense ne peut pas fonctionner comme firewall — il n&#39;aurait pas d&#39;entrée (WAN) et de sortie (LAN). Vous pouvez cependant installer avec une seule carte et en ajouter une ensuite.</p>
+</blockquote>
+<h2 id="3-creation-de-la-machine-virtuelle-vmware">3. Création de la machine virtuelle VMware</h2>
+<h3 id="31-creation-dune-nouvelle-vm">3.1 Création d&#39;une nouvelle VM</h3>
+<p>Lancez VMware Workstation Pro.</p>
+<p><img src="../images/pfsense/image2.png" alt="Lancement VMware" /></p>
+<hr>
+<p>Cliquez sur <strong>File</strong> &gt; <strong>New Virtual Machine...</strong> puis sélectionnez <strong>Custom (advanced)</strong> et cliquez sur <strong>Next</strong>.</p>
+<p><img src="../images/pfsense/image3.png" alt="Nouvelle VM" /></p>
+<p><img src="../images/pfsense/image4.png" alt="Custom advanced" /></p>
+<h3 id="32-choix-du-type-de-systeme">3.2 Choix du type de système</h3>
+<p>Dans la fenêtre <strong>Guest Operating System Installation</strong>, choisissez <strong>Use ISO image file</strong> et indiquez votre ISO pfSense CE.</p>
+<p><img src="../images/pfsense/image5.png" alt="Sélection ISO" /></p>
+<hr>
+<p>Cliquez sur <strong>Next</strong>, puis attribuez un nom à la VM.</p>
+<p><img src="../images/pfsense/image6.png" alt="Attribution du nom" /></p>
+<p><img src="../images/pfsense/image7.png" alt="Nom de la VM" /></p>
+<hr>
+<p>Pour le nombre de processeurs, nous mettons 2 pour plus d&#39;aisance, puis 2 Go de RAM.</p>
+<p><img src="../images/pfsense/image8.png" alt="Configuration CPU" /></p>
+<h3 id="33-configuration-reseau">3.3 Configuration réseau</h3>
+<p>C&#39;est l&#39;étape la plus importante. Nous allons créer deux cartes réseau virtuelles : une pour le WAN et une pour le LAN.</p>
+<p><img src="../images/pfsense/image9.png" alt="Configuration réseau" /></p>
+<table>
+<thead>
+<tr>
+<th align="left">Adaptateur</th>
+<th align="left">Rôle</th>
+<th align="left">Type de réseau VMware recommandé</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Carte 1</td>
+<td align="left"><strong>WAN</strong></td>
+<td align="left">NAT (accès Internet via la machine hôte)</td>
+</tr>
+<tr>
+<td align="left">Carte 2</td>
+<td align="left"><strong>LAN</strong></td>
+<td align="left">Host-only (réseau interne isolé)</td>
+</tr>
+</tbody></table>
+<p><strong>Adaptateur WAN</strong> : sélectionnez <strong>NAT</strong>. Cela permet à pfSense d&#39;accéder à Internet via votre machine hôte sans se soucier des adresses IP réelles.</p>
+<p><strong>Adaptateur LAN</strong> : une fois la première carte créée, allez dans les paramètres de la VM (<strong>Customize Hardware</strong>), cliquez sur <strong>Add</strong> &gt; <strong>Network Adapter</strong> et sélectionnez <strong>Host-only</strong>. Ce réseau privé et isolé est celui auquel vous connecterez vos autres VMs clientes.</p>
+<h3 id="34-configuration-du-disque">3.4 Configuration du disque</h3>
+<p>Contrôleur : <strong>LSI Logic</strong></p>
+<p><img src="../images/pfsense/image10.png" alt="Contrôleur LSI Logic" /></p>
+<hr>
+<p>Type de disque : <strong>SCSI</strong></p>
+<p><img src="../images/pfsense/image11.png" alt="Type SCSI" /></p>
+<hr>
+<p>Créez un nouveau disque virtuel.</p>
+<p><img src="../images/pfsense/image12.png" alt="Créer disque" /></p>
+<hr>
+<p>Taille du disque : <strong>20 Go</strong>. Si vous comptez analyser des logs sur pfSense, prévoyez plus.</p>
+<p><img src="../images/pfsense/image13.png" alt="Taille 20 Go" /></p>
+<hr>
+<p>Laissez le lieu de stockage par défaut.</p>
+<p><img src="../images/pfsense/image14.png" alt="Stockage par défaut" /></p>
+<hr>
+<p>Récapitulatif de la configuration avant de créer la VM.</p>
+<p><img src="../images/pfsense/image15.png" alt="Récapitulatif VM" /></p>
+<h2 id="4-installation-de-pfsense-ce">4. Installation de pfSense CE</h2>
+<h3 id="41-demarrage-de-la-vm">4.1 Démarrage de la VM</h3>
+<p>Lorsque la VM démarre, un compte à rebours de 10 secondes s&#39;affiche. Ne touchez à rien et laissez-le atteindre zéro (ou appuyez sur <code>Entrée</code>). Cela lancera le démarrage par défaut.</p>
+<p><img src="../images/pfsense/image16.png" alt="Écran de boot" /></p>
+<h3 id="42-lancement-de-linstallateur">4.2 Lancement de l&#39;installateur</h3>
+<p>Après le chargement des composants, vous arrivez à l&#39;écran de bienvenue avec la licence d&#39;utilisation.</p>
+<p><img src="../images/pfsense/image17.png" alt="Écran de bienvenue" /></p>
+<hr>
+<p>Sélectionnez <strong>Accept</strong> puis appuyez sur <strong>Entrée</strong>, puis choisissez <strong>Install</strong> pour lancer l&#39;installation complète.</p>
+<p><img src="../images/pfsense/image18.png" alt="Accept licence" /></p>
+<h3 id="43-parametrage-de-la-carte-reseau">4.3 Paramétrage de la carte réseau</h3>
+<p><img src="../images/pfsense/image19.png" alt="Sélection interface réseau" /></p>
+<hr>
+<p>Validez le choix de l&#39;interface pour le WAN.</p>
+<p><img src="../images/pfsense/image20.png" alt="Validation WAN" /></p>
+<hr>
+<p>Sélectionnez l&#39;interface WAN pour l&#39;installation de pfSense.</p>
+<p><img src="../images/pfsense/image21.png" alt="Interface WAN" /></p>
+<hr>
+<p>Puis lancez l&#39;installation.</p>
+<p><img src="../images/pfsense/image22.png" alt="Lancement installation" /></p>
+<p><img src="../images/pfsense/image23.png" alt="Installation en cours" /></p>
+<h3 id="44-partitionnement">4.4 Partitionnement</h3>
+<p>L&#39;installateur va partitionner le disque. Laissez les options par défaut — pour les débutants, c&#39;est la solution la plus simple.</p>
+<p><img src="../images/pfsense/image24.png" alt="Partitionnement" /></p>
+<p><img src="../images/pfsense/image25.png" alt="Options partitionnement" /></p>
+<h3 id="45-selection-du-disque-virtuel">4.5 Sélection du disque virtuel</h3>
+<p>pfSense détecte le disque virtuel que vous avez créé (généralement nommé <code>ada0</code>). L&#39;avertissement vous informe que <strong>toutes les données</strong> présentes seront effacées.</p>
+<p><img src="../images/pfsense/image26.png" alt="Sélection du disque" /></p>
+<hr>
+<p>Confirmez l&#39;avertissement et cliquez sur <strong>OK</strong>. Puisque c&#39;est un disque virtuel vide, il n&#39;y a aucun risque.</p>
+<p><img src="../images/pfsense/image27.png" alt="Avertissement effacement" /></p>
+<h3 id="46-choix-de-la-version-et-fin-dinstallation">4.6 Choix de la version et fin d&#39;installation</h3>
+<p>Choisissez la dernière version <strong>Stable</strong>.</p>
+<p><img src="../images/pfsense/image28.png" alt="Choix version stable" /></p>
+<hr>
+<p>Une fois les fichiers copiés, sélectionnez <strong>Reboot</strong> pour redémarrer sur le système installé.</p>
+<p><img src="../images/pfsense/image29.png" alt="Fin d'installation" /></p>
+<h2 id="5-post-installation">5. Post-installation</h2>
+<h3 id="51-redemarrage-et-retrait-de-liso">5.1 Redémarrage et retrait de l&#39;ISO</h3>
+<p>Avant le redémarrage, éjectez l&#39;ISO d&#39;installation : dans VMware, allez dans <strong>VM</strong> &gt; <strong>Settings</strong> &gt; <strong>CD/DVD (SATA)</strong> et décochez <strong>Connect at power on</strong>. Sélectionnez ensuite <strong>Reboot</strong> dans la console pfSense.</p>
+<h3 id="52-premiere-configuration-console">5.2 Première configuration console</h3>
+<p>Après le redémarrage, pfSense affiche l&#39;attribution des interfaces réseau.</p>
+<p><img src="../images/pfsense/image30.png" alt="Console pfSense" /></p>
+<p>Le système affiche un résumé :</p>
+<ul>
+<li><strong>WAN</strong> : adresse IP obtenue via DHCP (souvent 192.168.x.x en NAT VMware).</li>
+<li><strong>LAN</strong> : l&#39;adresse IP par défaut est <strong>192.168.1.1</strong> — c&#39;est la <em>gateway</em> de votre réseau interne. Elle sera configurable via l&#39;interface web.</li>
+</ul>
+<h2 id="6-acces-a-linterface-web-pfsense">6. Accès à l&#39;interface web pfSense</h2>
+<h3 id="61-adresse-ip-lan-par-defaut">6.1 Adresse IP LAN par défaut</h3>
+<p>L&#39;adresse d&#39;administration de pfSense est : <strong><code>http://192.168.1.1</code></strong></p>
+<h3 id="62-acces-via-navigateur">6.2 Accès via navigateur</h3>
+<p>Ouvrez un navigateur sur votre machine hôte (ou une VM connectée au réseau Host-only/LAN) et tapez <strong><code>http://192.168.1.1</code></strong>.</p>
+<p><img src="../images/pfsense/image31.png" alt="Page de connexion pfSense" /></p>
+<table>
+<thead>
+<tr>
+<th align="left">Connexion par défaut</th>
+<th align="left">Valeur</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Nom d&#39;utilisateur</strong></td>
+<td align="left"><code>admin</code></td>
+</tr>
+<tr>
+<td align="left"><strong>Mot de passe</strong></td>
+<td align="left"><code>pfsense</code></td>
+</tr>
+</tbody></table>
+<h3 id="63-assistant-de-configuration-initiale-wizard">6.3 Assistant de configuration initiale (Wizard)</h3>
+<p>La première fois, pfSense lance un assistant (<em>Setup Wizard</em>). Suivez les étapes :</p>
+<p><strong>Welcome / Next</strong> — démarrez l&#39;assistant.</p>
+<p><img src="../images/pfsense/image32.png" alt="Setup Wizard" /></p>
+<hr>
+<p><strong>General Information</strong> :</p>
+<ul>
+<li><strong>Hostname</strong> : <code>pfSense-LAB</code> (par exemple)</li>
+<li><strong>Domain</strong> : <code>lab.local</code> (pour votre réseau interne)</li>
+<li><strong>DNS Servers</strong> : laissez par défaut ou renseignez <code>8.8.8.8</code> et <code>8.8.4.4</code></li>
+</ul>
+<p><img src="../images/pfsense/image33.png" alt="Informations générales" /></p>
+<hr>
+<p><strong>TimeZone</strong> : sélectionnez votre fuseau horaire.</p>
+<p><img src="../images/pfsense/image34.png" alt="Fuseau horaire" /></p>
+<hr>
+<p><strong>WAN Configuration</strong> : laissez <strong>DHCP</strong> — le réseau VMware (NAT) fournira l&#39;IP automatiquement.</p>
+<p><img src="../images/pfsense/image35.png" alt="Configuration WAN" /></p>
+<hr>
+<p>Décochez les 2 cases suivantes, sinon vous ne pourrez plus accéder à l&#39;interface web via le WAN.</p>
+<p><img src="../images/pfsense/image36.png" alt="Cases à décocher" /></p>
+<hr>
+<p><strong>Admin Password</strong> : changez le mot de passe par défaut. Cliquez ensuite sur <strong>Reload</strong>.</p>
+<p><img src="../images/pfsense/image37.png" alt="Changement mot de passe" /></p>
+<h2 id="7-bonnes-pratiques-pour-debuter">7. Bonnes pratiques pour débuter</h2>
+<h3 id="changer-le-mot-de-passe-admin">Changer le mot de passe admin</h3>
+<p>C&#39;est la première chose à faire. Le mot de passe par défaut (<code>pfsense</code>) est un risque de sécurité majeur. Si l&#39;assistant ne vous l&#39;a pas demandé, allez dans <strong>System</strong> &gt; <strong>User Manager</strong>.</p>
+<h3 id="verifier-lacces-internet">Vérifier l&#39;accès Internet</h3>
+<p>Depuis la console pfSense (Menu 9 — <strong>Ping utility</strong>), vérifiez que vous pouvez pinguer une adresse externe (<code>google.com</code>). Depuis un PC client connecté au réseau LAN, vérifiez qu&#39;il obtient une IP via DHCP et qu&#39;il accède à Internet.</p>
+<h3 id="sauvegarder-la-configuration">Sauvegarder la configuration</h3>
+<p>Dès que vous avez une configuration fonctionnelle, faites une sauvegarde : <strong>Diagnostics</strong> &gt; <strong>Backup / Restore</strong> &gt; téléchargez le fichier XML sur votre machine hôte.</p>
+<blockquote>
+<p>Sauvegardez après chaque grande étape. Cela vous évitera de tout recommencer en cas de fausse manipulation.</p>
+</blockquote>
+
+          </article>
+
+          <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--color-border)">
+            <a href="../securite/pare-feu.html" class="back-link" style="margin:0;padding:8px 16px;background-color:var(--color-bg-secondary);border-radius:8px">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              Retour aux procédures
+            </a>
+          </div>
+        </div>
+
+        <aside class="toc-wrap">
+          <div class="toc-sticky">
+            <div class="toc-box">
+              <h4 class="toc-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                Sommaire
+              </h4>
+              <nav>
+                <ul class="toc-list">
+                  <li><a href="#1-introduction-a-pfsense-et-au-role-du-firewall" class="toc-link" data-id="1-introduction-a-pfsense-et-au-role-du-firewall">1. Introduction à pfSense et au rôle du Firewall</a></li>
+                  <li><a href="#quest-ce-que-pfsense-ce" class="toc-link depth-3" data-id="quest-ce-que-pfsense-ce">Qu'est-ce que pfSense CE ?</a></li>
+                  <li><a href="#le-role-dun-firewall" class="toc-link depth-3" data-id="le-role-dun-firewall">Le rôle d'un Firewall</a></li>
+                  <li><a href="#pourquoi-utiliser-pfsense-en-formation" class="toc-link depth-3" data-id="pourquoi-utiliser-pfsense-en-formation">Pourquoi utiliser pfSense en formation ?</a></li>
+                  <li><a href="#2-prerequis-pour-linstallation" class="toc-link" data-id="2-prerequis-pour-linstallation">2. Prérequis pour l'installation</a></li>
+                  <li><a href="#logiciel-et-fichiers" class="toc-link depth-3" data-id="logiciel-et-fichiers">Logiciel et fichiers</a></li>
+                  <li><a href="#configuration-minimale-de-la-vm" class="toc-link depth-3" data-id="configuration-minimale-de-la-vm">Configuration minimale de la VM</a></li>
+                  <li><a href="#3-creation-de-la-machine-virtuelle-vmware" class="toc-link" data-id="3-creation-de-la-machine-virtuelle-vmware">3. Création de la machine virtuelle VMware</a></li>
+                  <li><a href="#31-creation-dune-nouvelle-vm" class="toc-link depth-3" data-id="31-creation-dune-nouvelle-vm">3.1 Création d'une nouvelle VM</a></li>
+                  <li><a href="#32-choix-du-type-de-systeme" class="toc-link depth-3" data-id="32-choix-du-type-de-systeme">3.2 Choix du type de système</a></li>
+                  <li><a href="#33-configuration-reseau" class="toc-link depth-3" data-id="33-configuration-reseau">3.3 Configuration réseau</a></li>
+                  <li><a href="#34-configuration-du-disque" class="toc-link depth-3" data-id="34-configuration-du-disque">3.4 Configuration du disque</a></li>
+                  <li><a href="#4-installation-de-pfsense-ce" class="toc-link" data-id="4-installation-de-pfsense-ce">4. Installation de pfSense CE</a></li>
+                  <li><a href="#41-demarrage-de-la-vm" class="toc-link depth-3" data-id="41-demarrage-de-la-vm">4.1 Démarrage de la VM</a></li>
+                  <li><a href="#42-lancement-de-linstallateur" class="toc-link depth-3" data-id="42-lancement-de-linstallateur">4.2 Lancement de l'installateur</a></li>
+                  <li><a href="#43-parametrage-de-la-carte-reseau" class="toc-link depth-3" data-id="43-parametrage-de-la-carte-reseau">4.3 Paramétrage de la carte réseau</a></li>
+                  <li><a href="#44-partitionnement" class="toc-link depth-3" data-id="44-partitionnement">4.4 Partitionnement</a></li>
+                  <li><a href="#45-selection-du-disque-virtuel" class="toc-link depth-3" data-id="45-selection-du-disque-virtuel">4.5 Sélection du disque virtuel</a></li>
+                  <li><a href="#46-choix-de-la-version-et-fin-dinstallation" class="toc-link depth-3" data-id="46-choix-de-la-version-et-fin-dinstallation">4.6 Choix de la version et fin d'installation</a></li>
+                  <li><a href="#5-post-installation" class="toc-link" data-id="5-post-installation">5. Post-installation</a></li>
+                  <li><a href="#51-redemarrage-et-retrait-de-liso" class="toc-link depth-3" data-id="51-redemarrage-et-retrait-de-liso">5.1 Redémarrage et retrait de l'ISO</a></li>
+                  <li><a href="#52-premiere-configuration-console" class="toc-link depth-3" data-id="52-premiere-configuration-console">5.2 Première configuration console</a></li>
+                  <li><a href="#6-acces-a-linterface-web-pfsense" class="toc-link" data-id="6-acces-a-linterface-web-pfsense">6. Accès à l'interface web pfSense</a></li>
+                  <li><a href="#61-adresse-ip-lan-par-defaut" class="toc-link depth-3" data-id="61-adresse-ip-lan-par-defaut">6.1 Adresse IP LAN par défaut</a></li>
+                  <li><a href="#62-acces-via-navigateur" class="toc-link depth-3" data-id="62-acces-via-navigateur">6.2 Accès via navigateur</a></li>
+                  <li><a href="#63-assistant-de-configuration-initiale-wizard" class="toc-link depth-3" data-id="63-assistant-de-configuration-initiale-wizard">6.3 Assistant de configuration initiale (Wizard)</a></li>
+                  <li><a href="#7-bonnes-pratiques-pour-debuter" class="toc-link" data-id="7-bonnes-pratiques-pour-debuter">7. Bonnes pratiques pour débuter</a></li>
+                  <li><a href="#changer-le-mot-de-passe-admin" class="toc-link depth-3" data-id="changer-le-mot-de-passe-admin">Changer le mot de passe admin</a></li>
+                  <li><a href="#verifier-lacces-internet" class="toc-link depth-3" data-id="verifier-lacces-internet">Vérifier l'accès Internet</a></li>
+                  <li><a href="#sauvegarder-la-configuration" class="toc-link depth-3" data-id="sauvegarder-la-configuration">Sauvegarder la configuration</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

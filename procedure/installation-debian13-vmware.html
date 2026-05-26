@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installer Debian 13 sur VMware Workstation Pro | IT-DOC</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="../" data-current-path="/virtualisation/vmware">
+
+  <main data-content>
+    <div class="container">
+      <div class="proc-layout">
+        <div class="proc-main">
+          <a href="../virtualisation/vmware.html" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Retour
+          </a>
+
+          <nav class="breadcrumb">
+            <a href="../index.html">Accueil</a>
+            <span class="sep">/</span>
+            <a href="../virtualisation.html">Virtualisation</a>
+            <span class="sep">/</span>
+            <a href="../virtualisation/vmware.html">VMware</a>
+            <span class="sep">/</span>
+            <span class="current">Installer Debian 13 sur VMware Workstation Pro</span>
+          </nav>
+
+          <div class="proc-header">
+            <h1>Installer Debian 13 sur VMware Workstation Pro</h1>
+            <div class="proc-meta">
+              <span class="badge badge-debutant">Débutant</span>
+              <span class="meta-duration">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                30 minutes
+              </span>
+            <a href="../tags.html?tag=Debian" class="tag">Debian</a>
+            <a href="../tags.html?tag=VMware" class="tag">VMware</a>
+            <a href="../tags.html?tag=Installation" class="tag">Installation</a>
+            <a href="../tags.html?tag=VM" class="tag">VM</a>
+            </div>
+          </div>
+
+          <article class="prose">
+<h2 id="prerequis">Prérequis</h2>
+<ul>
+<li>VMware Workstation Pro</li>
+<li>Un ISO Debian 13</li>
+</ul>
+<h2 id="1-creation-de-la-machine-virtuelle">1. Création de la machine virtuelle</h2>
+<p>Ouvrir VMware Workstation Pro et créer une nouvelle machine virtuelle.</p>
+<p><img src="../images/debian13/debian-01.png" alt="Création VM" /></p>
+<p>Mode : <strong>Personnalisée (avancée)</strong></p>
+<p><img src="../images/debian13/debian-02.png" alt="Mode personnalisé" /></p>
+<p>Compatibilité : <strong>Workstation 25H2</strong></p>
+<p><img src="../images/debian13/debian-03.png" alt="Compatibilité" /></p>
+<p>ISO : <strong>debian-13.x-amd64-netinst.iso</strong></p>
+<p><img src="../images/debian13/debian-04.png" alt="Sélection ISO" /></p>
+<p>Nom : <strong>Debian 13</strong></p>
+<p><img src="../images/debian13/debian-05.png" alt="Nom de la VM" /></p>
+<p>CPU : <strong>2 processeurs / 1 coeur</strong></p>
+<p><img src="../images/debian13/debian-06.png" alt="Configuration CPU" /></p>
+<p>RAM : <strong>2 Go</strong></p>
+<p><img src="../images/debian13/debian-07.png" alt="Configuration RAM" /></p>
+<p>Réseau : <strong>NAT</strong></p>
+<p><img src="../images/debian13/debian-08.png" alt="Configuration réseau" /></p>
+<p>Contrôleur : <strong>LSI Logic</strong></p>
+<p><img src="../images/debian13/debian-09.png" alt="Contrôleur" /></p>
+<p>Type de disque : <strong>SCSI</strong></p>
+<p><img src="../images/debian13/debian-10.png" alt="Type de disque" /></p>
+<p>Créer un disque virtuel</p>
+<p><img src="../images/debian13/debian-11.png" alt="Créer disque" /></p>
+<p>Disque : <strong>SCSI – 20 Go – divisé en plusieurs fichiers</strong></p>
+<p><img src="../images/debian13/debian-12.png" alt="Taille disque" /></p>
+<p>Cliquez sur Suivant</p>
+<p><img src="../images/debian13/debian-13.png" alt="Suivant" /></p>
+<p>Vous pouvez placer votre VM où vous souhaitez, dans notre cas on laisse par défaut.</p>
+<p><img src="../images/debian13/debian-14.png" alt="Emplacement VM" /></p>
+<h2 id="2-installation-debian">2. Installation Debian</h2>
+<p>Démarrer la VM et choisir <strong>Graphical install</strong></p>
+<p><img src="../images/debian13/debian-15.png" alt="Graphical install" /></p>
+<p>Langue : <strong>English</strong></p>
+<p><img src="../images/debian13/debian-16.png" alt="Langue" /></p>
+<p>Pays : <strong>United States</strong></p>
+<p><img src="../images/debian13/debian-17.png" alt="Pays" /></p>
+<p>Clavier : <strong>French</strong></p>
+<p><img src="../images/debian13/debian-18.png" alt="Clavier" /></p>
+<p>Hostname : <strong>debian</strong></p>
+<p><img src="../images/debian13/debian-19.png" alt="Hostname" /></p>
+<p>Domaine : laisser vide</p>
+<p><img src="../images/debian13/debian-20.png" alt="Domaine" /></p>
+<h2 id="3-comptes-utilisateurs">3. Comptes utilisateurs</h2>
+<p>Mot de passe root : définir un mot de passe sécurisé</p>
+<p><img src="../images/debian13/debian-21.png" alt="Mot de passe root" /></p>
+<p>Nom complet utilisateur : <strong>dev</strong></p>
+<p><img src="../images/debian13/debian-22.png" alt="Nom utilisateur" /></p>
+<p>Identifiant utilisateur : <strong>dev</strong></p>
+<p><img src="../images/debian13/debian-23.png" alt="Identifiant" /></p>
+<p>Mot de passe utilisateur : définir</p>
+<p><img src="../images/debian13/debian-24.png" alt="Mot de passe user" /></p>
+<p>Fuseau horaire du système</p>
+<p><img src="../images/debian13/debian-25.png" alt="Fuseau horaire" /></p>
+<h2 id="4-partitionnement">4. Partitionnement</h2>
+<p>Sélectionnez <strong>Guided – use entire disk</strong></p>
+<p><img src="../images/debian13/debian-26.png" alt="Partitionnement guidé" /></p>
+<p>Cliquez sur Continue</p>
+<p><img src="../images/debian13/debian-27.png" alt="Continue" /></p>
+<p>Sélectionnez <strong>All files in one partition</strong></p>
+<p><img src="../images/debian13/debian-28.png" alt="Une seule partition" /></p>
+<p>Cliquez sur Continue</p>
+<p><img src="../images/debian13/debian-29.png" alt="Continue" /></p>
+<p>Confirmez l&#39;écriture sur le disque</p>
+<p><img src="../images/debian13/debian-30.png" alt="Confirmation" /></p>
+<h2 id="5-paquets-et-logiciels">5. Paquets et logiciels</h2>
+<p>Cliquez sur Continue</p>
+<p><img src="../images/debian13/debian-31.png" alt="Paquets 1" /></p>
+<p>Cliquez sur Continue</p>
+<p><img src="../images/debian13/debian-32.png" alt="Paquets 2" /></p>
+<p>Miroir : <strong>deb.debian.org</strong></p>
+<p><img src="../images/debian13/debian-33.png" alt="Miroir" /></p>
+<p>Pas de proxy</p>
+<p><img src="../images/debian13/debian-34.png" alt="Proxy" /></p>
+<p>Popularity contest : <strong>No</strong></p>
+<p><img src="../images/debian13/debian-35.png" alt="Popularity" /></p>
+<p>Sélection : <strong>GNOME, SSH server, standard utilities</strong></p>
+<p><img src="../images/debian13/debian-36.png" alt="Sélection logiciels" /></p>
+<blockquote>
+<p>Pour une utilisation exclusivement serveur, il est recommandé de décocher les options &quot;Debian desktop environment&quot; et &quot;GNOME&quot;, afin d&#39;installer un système sans interface graphique, fonctionnant uniquement en ligne de commande (CLI), plus adapté et plus léger pour un usage serveur.</p>
+</blockquote>
+<h2 id="6-grub">6. GRUB</h2>
+<p>Installer GRUB : <strong>Yes</strong></p>
+<p><img src="../images/debian13/debian-37.png" alt="GRUB" /></p>
+<p>Disque : <strong>/dev/sda</strong></p>
+<p><img src="../images/debian13/debian-38.png" alt="Disque GRUB" /></p>
+<h2 id="7-fin">7. Fin</h2>
+<p>Redémarrez la machine</p>
+<p><img src="../images/debian13/debian-39.png" alt="Redémarrage" /></p>
+<p>Bienvenue sur le bureau GNOME de Debian 13 !</p>
+<p><img src="../images/debian13/debian-41.png" alt="Bureau GNOME" /></p>
+
+          </article>
+
+          <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--color-border)">
+            <a href="../virtualisation/vmware.html" class="back-link" style="margin:0;padding:8px 16px;background-color:var(--color-bg-secondary);border-radius:8px">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              Retour aux procédures
+            </a>
+          </div>
+        </div>
+
+        <aside class="toc-wrap">
+          <div class="toc-sticky">
+            <div class="toc-box">
+              <h4 class="toc-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                Sommaire
+              </h4>
+              <nav>
+                <ul class="toc-list">
+                  <li><a href="#prerequis" class="toc-link" data-id="prerequis">Prérequis</a></li>
+                  <li><a href="#1-creation-de-la-machine-virtuelle" class="toc-link" data-id="1-creation-de-la-machine-virtuelle">1. Création de la machine virtuelle</a></li>
+                  <li><a href="#2-installation-debian" class="toc-link" data-id="2-installation-debian">2. Installation Debian</a></li>
+                  <li><a href="#3-comptes-utilisateurs" class="toc-link" data-id="3-comptes-utilisateurs">3. Comptes utilisateurs</a></li>
+                  <li><a href="#4-partitionnement" class="toc-link" data-id="4-partitionnement">4. Partitionnement</a></li>
+                  <li><a href="#5-paquets-et-logiciels" class="toc-link" data-id="5-paquets-et-logiciels">5. Paquets et logiciels</a></li>
+                  <li><a href="#6-grub" class="toc-link" data-id="6-grub">6. GRUB</a></li>
+                  <li><a href="#7-fin" class="toc-link" data-id="7-fin">7. Fin</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

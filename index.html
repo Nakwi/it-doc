@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accueil | IT-DOC</title>
+  <meta name="description" content="Documentation technique pour BTS SIO et Bachelor informatique" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="" data-current-path="/">
+
+  <main data-content>
+    <div class="container">
+
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-pill">
+          <span class="dot-pulse"></span>
+          <span id="hero-count">7 procédures disponibles</span>
+        </div>
+        <h1>Documentation Technique IT</h1>
+        <p class="hero-subtitle">
+          Procédures claires et structurées pour l'administration systèmes et réseaux.<br/>
+          <strong>Par des étudiants, pour des étudiants.</strong>
+        </p>
+        <div class="stats-pills">
+          <div class="stat-pill windows"><strong>5</strong>&nbsp;catégories</div>
+          <div class="stat-pill linux"><strong id="stat-procs">7</strong>&nbsp;procédures</div>
+          <div class="stat-pill virt"><strong id="stat-hours">5h</strong>&nbsp;de contenu</div>
+        </div>
+      </section>
+
+      <!-- Recent procedures -->
+      <section class="section">
+        <h2 class="section-title">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Procédures récentes
+        </h2>
+        <div class="proc-grid recent" id="recent-grid"></div>
+      </section>
+
+      <!-- Categories grid -->
+      <section class="section">
+        <h2 class="section-title">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          Explorer par catégorie
+        </h2>
+        <div class="cat-grid" id="cat-grid"></div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta">
+        <div>
+          <h3>Créé par des étudiants en Master IRC</h3>
+          <p>Documentations testées et validées pour les formations BTS SIO et Bachelor.</p>
+        </div>
+        <a href="a-propos.html" class="cta-btn">
+          Découvrir l'équipe
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="js/data.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // Populate dynamic content
+    const procs = window.__PROCEDURES__;
+    const cats = window.__CATEGORIES__;
+    const base = '';
+
+    // Stats
+    const totalDuration = procs.reduce((s, p) => s + p.duration, 0);
+    document.getElementById('hero-count').textContent = procs.length + ' procédures disponibles';
+    document.getElementById('stat-procs').textContent = procs.length;
+    document.getElementById('stat-hours').textContent = Math.round(totalDuration / 60) + 'h';
+
+    // Recent procedures (last 4)
+    const recent = procs.slice(-4).reverse();
+    document.getElementById('recent-grid').innerHTML = recent.map(p => {
+      const cat = cats.find(c => c.id === p.category);
+      return `
+        <a href="${base}procedure/${p.id}.html" class="proc-card">
+          <div class="proc-card-cover">
+            ${p.cover
+              ? `<img src="${base}${p.cover}" alt="${p.title}" />`
+              : `<div class="proc-card-cover-fallback">${cat?.emoji || '📄'}</div>`}
+          </div>
+          <div class="proc-card-body">
+            <div class="proc-card-cat">
+              <span class="dot" style="background-color: ${cat?.color}"></span>
+              <span>${cat?.label}</span>
+            </div>
+            <h3 class="proc-card-title">${p.title}</h3>
+            <div class="proc-card-footer">
+              <span class="badge badge-${p.level.toLowerCase().replace(/é/g, 'e')}">${p.level}</span>
+              <span class="proc-card-duration">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                ${p.duration} min
+              </span>
+            </div>
+          </div>
+        </a>`;
+    }).join('');
+
+    // Categories
+    document.getElementById('cat-grid').innerHTML = cats.map(c => {
+      const count = procs.filter(p => p.category === c.id).length;
+      return `
+        <a href="${base}${c.id}.html" class="cat-card">
+          <div class="cat-card-icon" style="background-color: ${c.color}26">${c.emoji}</div>
+          <h3 class="cat-card-title" style="color: ${c.color}">${c.label}</h3>
+          <p class="cat-card-desc">${c.description}</p>
+          <div class="cat-card-count">${count} procédure${count > 1 ? 's' : ''}</div>
+        </a>`;
+    }).join('');
+  </script>
+</body>
+</html>

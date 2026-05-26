@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Déploiement d'un poste client Windows 11 sur Proxmox VE | IT-DOC</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="../" data-current-path="/virtualisation/proxmox">
+
+  <main data-content>
+    <div class="container">
+      <div class="proc-layout">
+        <div class="proc-main">
+          <a href="../virtualisation/proxmox.html" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Retour
+          </a>
+
+          <nav class="breadcrumb">
+            <a href="../index.html">Accueil</a>
+            <span class="sep">/</span>
+            <a href="../virtualisation.html">Virtualisation</a>
+            <span class="sep">/</span>
+            <a href="../virtualisation/proxmox.html">Proxmox</a>
+            <span class="sep">/</span>
+            <span class="current">Déploiement d'un poste client Windows 11 sur Proxmox VE</span>
+          </nav>
+
+          <div class="proc-header">
+            <h1>Déploiement d'un poste client Windows 11 sur Proxmox VE</h1>
+            <div class="proc-meta">
+              <span class="badge badge-debutant">Débutant</span>
+              <span class="meta-duration">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                30 minutes
+              </span>
+            <a href="../tags.html?tag=Windows%2011" class="tag">Windows 11</a>
+            <a href="../tags.html?tag=Proxmox" class="tag">Proxmox</a>
+            <a href="../tags.html?tag=VM" class="tag">VM</a>
+            <a href="../tags.html?tag=OOBE" class="tag">OOBE</a>
+            <a href="../tags.html?tag=TPM" class="tag">TPM</a>
+            </div>
+          </div>
+
+          <article class="prose">
+<h2 id="1-creation-de-la-vm-sur-proxmox">1. Création de la VM sur Proxmox</h2>
+<h3 id="parametres-generaux">Paramètres généraux</h3>
+<ul>
+<li><strong>Nœud :</strong> Sélectionnez votre serveur (ex : <code>nakserv</code>).</li>
+<li><strong>ID / Nom :</strong> Attribuez l&#39;ID <code>100</code> et le nom <code>IT-DOC-Win11C</code>.</li>
+</ul>
+<p><img src="../images/win11/16.png" alt="Paramètres généraux" /></p>
+<h3 id="systeme-dexploitation">Système d&#39;exploitation</h3>
+<ul>
+<li><strong>ISO :</strong> Sélectionnez l&#39;image <code>Win11_25H2_French</code> stockée sur votre serveur.</li>
+<li><strong>Type/Version :</strong> Choisissez <code>Microsoft Windows</code> et la version <code>11/2022/2025</code>.</li>
+</ul>
+<p><img src="../images/win11/17.png" alt="Système d'exploitation" /></p>
+<h3 id="configuration-systeme-prerequis-windows-11">Configuration système (prérequis Windows 11)</h3>
+<ul>
+<li><strong>BIOS/Machine :</strong> Utilisez <code>OVMF (UEFI)</code> et le chipset <code>q35</code>.</li>
+<li><strong>Sécurité :</strong> Cochez l&#39;ajout d&#39;un disque EFI et d&#39;un module <strong>TPM v2.0</strong>.</li>
+</ul>
+<p><img src="../images/win11/18.png" alt="Configuration système" /></p>
+<h3 id="ressources-materielles">Ressources matérielles</h3>
+<p>Allouez <strong>60 Go</strong> sur le stockage <code>local-lvm</code>.</p>
+<p><img src="../images/win11/19.png" alt="Disque 60 Go" /></p>
+<hr>
+<p>Configurez <strong>2 cœurs</strong> CPU.</p>
+<p><img src="../images/win11/20.png" alt="CPU 2 cœurs" /></p>
+<hr>
+<p>Allouez <strong>4096 MiB</strong> (4 Go) de RAM et désactivez le <em>ballooning</em>.</p>
+<p><img src="../images/win11/21.png" alt="RAM 4 Go" /></p>
+<hr>
+<p>Laissez les paramètres réseau par défaut (Bridge <code>vmbr0</code>).</p>
+<p><img src="../images/win11/22.png" alt="Réseau" /></p>
+<h2 id="2-installation-du-systeme">2. Installation du système</h2>
+<p>Lancez la VM et appuyez sur la barre espace pour démarrer l&#39;installation.</p>
+<p>Validez le <strong>Français</strong> et le clavier <strong>AZERTY</strong>.</p>
+<p><img src="../images/win11/24.png" alt="Langue et clavier" /></p>
+<hr>
+<p>Si vous avez une clé produit renseignez-la, sinon cliquez sur <strong>Je n&#39;ai pas de clé produit</strong>.</p>
+<p><img src="../images/win11/4.png" alt="Clé produit" /></p>
+<hr>
+<p>Sélectionnez <strong>Windows 11 Professionnel</strong> pour plus de fonctionnalités.</p>
+<p><img src="../images/win11/5.png" alt="Version Windows 11 Pro" /></p>
+<hr>
+<p>Acceptez les conditions d&#39;utilisation.</p>
+<p><img src="../images/win11/6.png" alt="Conditions" /></p>
+<hr>
+<p>Sélectionnez l&#39;espace non alloué de 60 Go pour le partitionnement.</p>
+<p><img src="../images/win11/7.png" alt="Partitionnement" /></p>
+<hr>
+<p>Cliquez sur <strong>Installer</strong> et attendez la fin de la copie des fichiers.</p>
+<h2 id="3-configuration-personnalisee-oobe-bypass">3. Configuration personnalisée (OOBE &amp; Bypass)</h2>
+<h3 id="configuration-classique">Configuration classique</h3>
+<p>Sélectionnez votre langue.</p>
+<p><img src="../images/win11/10.png" alt="Langue" /></p>
+<hr>
+<p>Puis le clavier.</p>
+<p><img src="../images/win11/11.png" alt="Clavier" /></p>
+<hr>
+<p>Puis le type d&#39;utilisation.</p>
+<p><img src="../images/win11/12.png" alt="Type d'utilisation" /></p>
+<h3 id="contournement-du-compte-microsoft">Contournement du compte Microsoft</h3>
+<p>À l&#39;écran de configuration du pays ou du réseau, ouvrez le terminal avec <strong>Shift + F10</strong> (ou Tab + F10) et tapez :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">cmd</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-cmd">oobe\bypassnro</code></pre>
+</div>
+<p><img src="../images/win11/25.png" alt="Bypass NRO" /></p>
+<h3 id="creation-du-compte-local">Création du compte local</h3>
+<p>Windows va redémarrer. Une fois le boot terminé, vous repasserez par le choix de la langue et du clavier, puis vous arriverez sur une page demandant un nom pour l&#39;appareil.</p>
+<p><img src="../images/win11/26.png" alt="Nom de l'appareil" /></p>
+<hr>
+<p>Refusez systématiquement les options de collecte de données pour plus de confidentialité.</p>
+<h2 id="4-finalisation">4. Finalisation</h2>
+<p>Patientez durant la préparation finale du bureau.</p>
+<p><img src="../images/win11/27.png" alt="Préparation bureau" /></p>
+<p><img src="../images/win11/28.png" alt="Chargement final" /></p>
+<hr>
+<p>Vous êtes connecté sur votre machine Windows 11.</p>
+<p><img src="../images/win11/29.png" alt="Bureau Windows 11" /></p>
+
+          </article>
+
+          <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--color-border)">
+            <a href="../virtualisation/proxmox.html" class="back-link" style="margin:0;padding:8px 16px;background-color:var(--color-bg-secondary);border-radius:8px">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              Retour aux procédures
+            </a>
+          </div>
+        </div>
+
+        <aside class="toc-wrap">
+          <div class="toc-sticky">
+            <div class="toc-box">
+              <h4 class="toc-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                Sommaire
+              </h4>
+              <nav>
+                <ul class="toc-list">
+                  <li><a href="#1-creation-de-la-vm-sur-proxmox" class="toc-link" data-id="1-creation-de-la-vm-sur-proxmox">1. Création de la VM sur Proxmox</a></li>
+                  <li><a href="#parametres-generaux" class="toc-link depth-3" data-id="parametres-generaux">Paramètres généraux</a></li>
+                  <li><a href="#systeme-dexploitation" class="toc-link depth-3" data-id="systeme-dexploitation">Système d'exploitation</a></li>
+                  <li><a href="#configuration-systeme-prerequis-windows-11" class="toc-link depth-3" data-id="configuration-systeme-prerequis-windows-11">Configuration système (prérequis Windows 11)</a></li>
+                  <li><a href="#ressources-materielles" class="toc-link depth-3" data-id="ressources-materielles">Ressources matérielles</a></li>
+                  <li><a href="#2-installation-du-systeme" class="toc-link" data-id="2-installation-du-systeme">2. Installation du système</a></li>
+                  <li><a href="#3-configuration-personnalisee-oobe-bypass" class="toc-link" data-id="3-configuration-personnalisee-oobe-bypass">3. Configuration personnalisée (OOBE & Bypass)</a></li>
+                  <li><a href="#configuration-classique" class="toc-link depth-3" data-id="configuration-classique">Configuration classique</a></li>
+                  <li><a href="#contournement-du-compte-microsoft" class="toc-link depth-3" data-id="contournement-du-compte-microsoft">Contournement du compte Microsoft</a></li>
+                  <li><a href="#creation-du-compte-local" class="toc-link depth-3" data-id="creation-du-compte-local">Création du compte local</a></li>
+                  <li><a href="#4-finalisation" class="toc-link" data-id="4-finalisation">4. Finalisation</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

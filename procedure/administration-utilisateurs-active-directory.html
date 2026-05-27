@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administration des utilisateurs Active Directory en PowerShell | IT-DOC</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="../" data-current-path="/powershell/active-directory">
+
+  <main data-content>
+    <div class="container">
+      <div class="proc-layout">
+        <div class="proc-main">
+          <a href="../powershell/active-directory.html" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Retour
+          </a>
+
+          <nav class="breadcrumb">
+            <a href="../index.html">Accueil</a>
+            <span class="sep">/</span>
+            <a href="../powershell.html">PowerShell</a>
+            <span class="sep">/</span>
+            <a href="../powershell/active-directory.html">Active Directory</a>
+            <span class="sep">/</span>
+            <span class="current">Administration des utilisateurs Active Directory en PowerShell</span>
+          </nav>
+
+          <div class="proc-header">
+            <h1>Administration des utilisateurs Active Directory en PowerShell</h1>
+            <div class="proc-meta">
+              <span class="badge badge-intermediaire">Intermédiaire</span>
+              <span class="meta-duration">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                50 minutes
+              </span>
+            <a href="../tags.html?tag=PowerShell" class="tag">PowerShell</a>
+            <a href="../tags.html?tag=Active%20Directory" class="tag">Active Directory</a>
+            <a href="../tags.html?tag=Utilisateurs" class="tag">Utilisateurs</a>
+            <a href="../tags.html?tag=Windows%20Server" class="tag">Windows Server</a>
+            </div>
+          </div>
+
+          <article class="prose">
+<h2 id="i-utilisateurs">I/ Utilisateurs</h2>
+<p>Nous allons maintenant voir les différentes fonctionnalités du module Active Directory de façon individuel. Pour a la fin en combiner certaines sous forme de script d&#39;administration.</p>
+<p>L&#39;administration des utilisateurs dans Active Directory est cruciale pour gérer efficacement l&#39;accès aux ressources informatiques au sein d&#39;une organisation. À travers ce chapitre, nous explorerons comment utiliser PowerShell pour ajouter, modifier, supprimer et rechercher des utilisateurs.</p>
+<h3 id="1-creation-utilisateurs">1 Création Utilisateurs</h3>
+<h4 id="11-utilisateur-classique">1.1 Utilisateur Classique</h4>
+<p>Pour la création d&#39;un utilisateur classique nous allons utiliser le cmdlet <code>New-ADUser</code> à la suite duquel nous allons spécifier des informations comme, le nom utilisateur et son OU.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell"># Création de l'utilisateur
+New-ADUser -Name "Angelo Vaque" `
+  -DisplayName "VZQUE Angelo" `
+  -GivenName "Angel" `
+  -Surname "Vazue" `
+  -SamAccountName "avasque" `
+  -UserPrincipalName "avasque@domcor.lan" `
+  -EmailAddress "angelo.vazque@domcor.lan" `
+  -Path "OU=BTS SIO SISR,OU=Etudiants,DC=DOMCOR,DC=LAN" `
+  -AccountPassword (Read-Host -AsSecureString "Mot de passe ?") `
+  -ChangePasswordAtLogon $true `
+  -Enabled $true</code></pre>
+</div>
+<p>Dans cet exemple :</p>
+<ul>
+<li><code>Name</code> : Définit le nom complet de l&#39;utilisateur dans Active Directory.</li>
+<li><code>GivenName</code> : Spécifie le prénom de l&#39;utilisateur.</li>
+<li><code>Surname</code> : Définit le nom de famille de l&#39;utilisateur.</li>
+<li><code>SamAccountName</code> : Définit le nom de compte SAM (Security Accounts Manager), qui est utilisé pour l&#39;authentification Windows.</li>
+<li><code>UserPrincipalName</code> : Spécifie le nom d&#39;utilisateur principal (UPN), une forme alternative de nom d&#39;utilisateur pour l&#39;authentification.</li>
+<li><code>EmailAddress</code> : Définit l&#39;adresse e-mail de l&#39;utilisateur.</li>
+<li><code>Path</code> : Spécifie l&#39;Unité Organisation (OU) ou l&#39;utilisateur sera créé.</li>
+<li><code>AccountPassword</code> : Définit le mot de passe du compte utilisateur. La fonction <code>ConvertTo-SecureString</code> est utilisée pour convertir la chaîne de caractères en un objet <code>SecureString</code>.</li>
+<li><code>ChangePasswordAtLogon</code> : Indique que l&#39;utilisateur devra changer son mot de passe lors de sa prochaine connexion.</li>
+<li><code>Enabled</code> : est utilisé pour rendre l&#39;utilisateur actif ou non de façon booléen (<code>$True</code> ou <code>$False</code>).</li>
+</ul>
+<h4 id="12-creation-utilisateur-depuis-une-variable">1.2 Création utilisateur depuis une variable</h4>
+<p>Après avoir vu précédemment comment créer un utilisateur classique nous allons utiliser des variables pour une approche plus dynamique. Ce qui rendra la création plus flexible à l&#39;avenir comme dans des script, ou des besoins récurrents.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell"># Définition des variables pour la création de l'utilisateur
+$nomComplet = "Angelo Vaque"
+$nomAffichage = "VAQUE Angelo"
+$prenom = "Angel"
+$nom = "Vaque"
+$samAccountName = "avasque"
+$upn = "avaque@domcor.lan"
+$email = "angelo.vaque@domcor.lan"
+$ou = "OU=BTS SIO SISR,OU=Etudiants,DC=DOMCOR,DC=LAN"
+$motDePasse = Read-Host -Prompt "Entrez le mot de passe" -AsSecureString
+$changerMotDePasse = $true
+
+# Création de l'utilisateur avec les variables définies
+New-ADUser -Name $nomComplet `
+  -DisplayName $nomAffichage `
+  -GivenName $prenom `
+  -Surname $nom `
+  -SamAccountName $samAccountName `
+  -UserPrincipalName $upn `
+  -EmailAddress $email `
+  -Path $ou `
+  -AccountPassword $motDePasse `
+  -ChangePasswordAtLogon $changerMotDePasse `
+  -Enabled $true</code></pre>
+</div>
+<p>Ici j&#39;ai donc repris les informations de notre 1er utilisateur. Dans un premier temps je vais initialiser les différentes variables avec tous les paramètres. En respectant bien le <code>$</code> pour préciser que c&#39;est une variable. Une fois toutes les variables initialisées, il ne me reste plus qu&#39;à utiliser notre premier script classique et à notifier chacune de nos variables.</p>
+<p>A préciser que ici pour le mot de passe j&#39;utilise <code>Read-Host</code> qui est un cmdlet qui permet de demander des informations directement depuis l&#39;interface powershell. Et qui stockera donc le mot de passe. Toujours de façon sécurisée avec <code>-AsSecureString</code>.</p>
+<h4 id="13-creation-utilisateur-interactif">1.3 Création utilisateur interactif</h4>
+<p>Nous allons maintenant dans cette dernière partie sur la création utilisateur, voir comment créer des utilisateur de façon interactive avec powershell. Pour ce faire, nous allons mélanger les différents points que nous avons appris plus tôt.</p>
+<p>Voici notre script complet :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Write-Host "# Création d'un utilisateur dans le domaine $((Get-ADDomain).DNSRoot)" -ForegroundColor Cyan
+
+$UtilisateurPrenom = Read-Host -Prompt "Prénom"
+$UtilisateurNom = Read-Host -Prompt "Nom"
+$UtilisateurLogin = Read-Host -Prompt "Identifiant"
+$UtilisateurMotDePasse = Read-Host -Prompt "Mot de passe" -AsSecureString
+$UtilisateurEmail = Read-Host -Prompt "Adresse e-mail"
+$UtilisateurFonction = Read-Host -Prompt "Fonction"
+$UtilisateurOU = (Get-ADOrganizationalUnit -Filter * | Out-GridView -Title "Choisissez une OU pour cet utilisateur" -PassThru).DistinguishedName
+$UtilisateurGroupes = (Get-ADGroup -Filter * -SearchBase "DC=domcor,DC=lan" | Out-GridView -Title "Choisissez un ou plusieurs groupes pour cet utilisateur" -PassThru).Name
+
+# Vérifier la présence de l'utilisateur dans l'AD
+if (Get-ADUser -Filter {SamAccountName -eq $UtilisateurLogin}) {
+  Write-Warning "L'identifiant $UtilisateurLogin existe déjà dans l'AD"
+}
+else {
+  New-ADUser -Name "$UtilisateurNom $UtilisateurPrenom" `
+    -DisplayName "$UtilisateurNom $UtilisateurPrenom" `
+    -GivenName $UtilisateurPrenom `
+    -Surname $UtilisateurNom `
+    -SamAccountName $UtilisateurLogin `
+    -UserPrincipalName "$UtilisateurLogin@$((Get-ADDomain).DNSRoot)" `
+    -EmailAddress $UtilisateurEmail `
+    -Title $UtilisateurFonction `
+    -Path $UtilisateurOU `
+    -AccountPassword $UtilisateurMotDePasse `
+    -ChangePasswordAtLogon $true `
+    -Enabled $true
+}
+
+# Ajouter l'utilisateur aux groupes spécifiés
+foreach ($Groupe in $UtilisateurGroupes) {
+  Add-ADGroupMember -Identity $Groupe -Members $UtilisateurLogin
+}</code></pre>
+</div>
+<p>Pour mieux comprendre le script nous allons le diviser en 2 Partie.</p>
+<h5 id="131-recuperation-des-information-utilisateur">1.3.1 Récupération des information utilisateur</h5>
+<p>Dans la première partie de notre script qui est la suivant :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Write-Host "# Création d'un utilisateur dans le domaine $((Get-ADDomain).DNSRoot)" -ForegroundColor Cyan
+
+$UtilisateurPrenom = Read-Host -Prompt "Prénom"
+$UtilisateurNom = Read-Host -Prompt "Nom"
+$UtilisateurLogin = Read-Host -Prompt "Identifiant"
+$UtilisateurMotDePasse = Read-Host -Prompt "Mot de passe" -AsSecureString
+$UtilisateurEmail = Read-Host -Prompt "Adresse e-mail"
+$UtilisateurFonction = Read-Host -Prompt "Fonction"
+$UtilisateurOU = (Get-ADOrganizationalUnit -Filter * | Out-GridView -Title "Choisissez une OU pour cet utilisateur" -PassThru).DistinguishedName
+$UtilisateurGroupes = (Get-ADGroup -Filter * -SearchBase "DC=domcor,DC=lan" | Out-GridView -Title "Choisissez un ou plusieurs groupes pour cet utilisateur" -PassThru).Name</code></pre>
+</div>
+<p>l&#39;objectif est de stocker chacune de nos informations dans des variables, pour pouvoir les utiliser dans la suite du script. La principale différence entre ce script et celui vu dans le chapitre précédent, c&#39;est que ici le script est intéractif. C&#39;est à son utilisateur de remplir les informations directement depuis l&#39;interface powershell. Cela est possible grâce à l&#39;utilisateur du cmdlet <code>Read-Host</code> liée à une variable.</p>
+<p>Par exemple ici pour le prénom. Le <code>Read-Host</code> demande à l&#39;utilisateur de remplir directement l&#39;information. Et une fois entré, la donnée sera stockée dans la variable <code>$UtilisateurPrenom</code>.</p>
+<p>Dans la suite du script nous avons une commande qui ne correspond à aucune vue précédemment qui est liée à la variable <code>$UtilisateurOU</code>. Pour récupérer OU de destination de notre futur utilisateur nous pouvons utiliser un <code>Read-Host</code> classique et remplir OU sous cette forme : <code>OU=RH, DC=DOMCOR, DC=LAN</code>. Mais pour une meilleure utilisation nous allons demander à l&#39;utilisateur de choisir l&#39;OU en fonction de celle déjà existante. Ce qui va grandement limiter les erreurs.</p>
+<p>Pour ce faire le script utilise cette commande :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">$UtilisateurOU = (Get-ADOrganizationalUnit -Filter * | Out-GridView -Title "Choisissez une OU pour cet utilisateur" -PassThru).DistinguishedName</code></pre>
+</div>
+<ul>
+<li><code>Get-ADOrganizationalUnit -Filter *</code> : Récupère toutes les Unités d&#39;Organisation (OU) de l&#39;Active Directory en utilisant le filtre <code>*</code>, ce qui signifie qu&#39;il récupère toutes les OUs sans filtrage supplémentaire.</li>
+<li><code>Out-GridView -Title &quot;Choisissez une OU pour cet utilisateur&quot; -PassThru</code> : Après avoir obtenu toutes les OUs, cette partie de la commande affiche une boîte de dialogue graphique (<code>Out-GridView</code>) avec un titre spécifié (&quot;Choisissez une OU pour cet utilisateur&quot;). Cela permet à l&#39;utilisateur de choisir visuellement une OU parmi celles récupérées. L&#39;option <code>-PassThru</code> est utilisée pour renvoyer la valeur sélectionnée par l&#39;utilisateur.</li>
+<li><code>(Get-ADOrganizationalUnit ...).DistinguishedName</code> : Enfin, la commande complète stocke la valeur de la propriété <code>DistinguishedName</code> de l&#39;OU sélectionnée par l&#39;utilisateur dans la variable <code>$UtilisateurOU</code>. Le <code>DistinguishedName</code> est un identifiant unique pour chaque objet dans Active Directory, et il est utilisé ici pour représenter l&#39;OU choisie.</li>
+</ul>
+<p>Enfin le script utilise aussi le même principe pour renseigner les/le groupe(s) du nouvel utilisateur.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">$UtilisateurGroupes = (Get-ADGroup -Filter * -SearchBase "DC=domcor,DC=lan" | Out-GridView -Title "Choisissez un ou plusieurs groupes pour cet utilisateur" -PassThru).Name</code></pre>
+</div>
+<h5 id="132-execution-des-variable">1.3.2 Exécution des variable</h5>
+<p>Maintenant après avoir au préalable renseigner toutes nos informations, il nous reste simplement à utiliser les informations stockées dans nos variables.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell"># Vérifier la présence de l'utilisateur dans l'AD
+if (Get-ADUser -Filter {SamAccountName -eq $UtilisateurLogin}) {
+  Write-Warning "L'identifiant $UtilisateurLogin existe déjà dans l'AD"
+}
+else {
+  New-ADUser -Name "$UtilisateurNom $UtilisateurPrenom" `
+    -DisplayName "$UtilisateurNom $UtilisateurPrenom" `
+    -GivenName $UtilisateurPrenom `
+    -Surname $UtilisateurNom `
+    -SamAccountName $UtilisateurLogin `
+    -UserPrincipalName "$UtilisateurLogin@$((Get-ADDomain).DNSRoot)" `
+    -EmailAddress $UtilisateurEmail `
+    -Title $UtilisateurFonction `
+    -Path $UtilisateurOU `
+    -AccountPassword $UtilisateurMotDePasse `
+    -ChangePasswordAtLogon $true `
+    -Enabled $true
+}
+
+# Ajouter l'utilisateur aux groupes spécifiés
+foreach ($Groupe in $UtilisateurGroupes) {
+  Add-ADGroupMember -Identity $Groupe -Members $UtilisateurLogin
+}</code></pre>
+</div>
+<p>Ici la première partie du script est de vérifier si les informations renseignées ne correspondent pas avec un utilisateur déjà existant dans notre AD.</p>
+<p>Pour ce faire nous utilisons cette commande :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">if (Get-ADUser -Filter {SamAccountName -eq $UtilisateurLogin}) {
+  Write-Warning "L'identifiant $UtilisateurLogin existe déjà dans l'AD"
+}</code></pre>
+</div>
+<ul>
+<li><code>if</code> : Pour rentrer le principe de conditions.</li>
+<li><code>Get-ADUser -Filter {SamAccountName -eq $UtilisateurLogin}</code> : C&#39;est comme une recherche dans le répertoire d&#39;utilisateurs. On demande à PowerShell de chercher un utilisateur où le nom d&#39;utilisateur (<code>SamAccountName</code>) correspond (<code>-eq</code>) à ce que l&#39;utilisateur a saisi dans <code>$UtilisateurLogin</code>.</li>
+<li><code>Write-Warning &quot;...&quot;</code> : Si PowerShell trouve un utilisateur avec le même identifiant, il affiche un avertissement indiquant que cet identifiant existe déjà dans Active Directory.</li>
+</ul>
+<p>Et si les informations utilisateurs ne correspondent pas avec un déjà existant alors le script existant le code suivant :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">else {
+  New-ADUser -Name "$UtilisateurNom $UtilisateurPrenom" `
+    -DisplayName "$UtilisateurNom $UtilisateurPrenom" `
+    -GivenName $UtilisateurPrenom `
+    -Surname $UtilisateurNom `
+    -SamAccountName $UtilisateurLogin `
+    -UserPrincipalName "$UtilisateurLogin@$((Get-ADDomain).DNSRoot)" `
+    -EmailAddress $UtilisateurEmail `
+    -Title $UtilisateurFonction `
+    -Path $UtilisateurOU `
+    -AccountPassword $UtilisateurMotDePasse `
+    -ChangePasswordAtLogon $true `
+    -Enabled $true
+}
+
+# Ajouter l'utilisateur aux groupes spécifiés
+foreach ($Groupe in $UtilisateurGroupes) {
+  Add-ADGroupMember -Identity $Groupe -Members $UtilisateurLogin
+}</code></pre>
+</div>
+<p>Ici nous connaissons déjà une partie des commandes, à l&#39;aide de <code>New-ADUser</code> powershell va créer notre utilisateurs en utilisant les informations stockées dans nos variables.</p>
+<p>La seul commande que nous ne connaissons pas est :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">foreach ($Groupe in $UtilisateurGroupes) {
+  Add-ADGroupMember -Identity $Groupe -Members $UtilisateurLogin
+}</code></pre>
+</div>
+<p>Ici nous avons l&#39;utilisation de Forreach, qui va stocker tous nos groupe sélectionnés dans une nouvelle variable qui est <code>$Groupe</code> et à l&#39;aide de <code>Add-ADGroupMember</code> que nous allons étudier plus tard les intégrer à notre nouvel utilisateur.</p>
+<h3 id="2-suppression-utilisateurs">2 Suppression Utilisateurs</h3>
+<h4 id="21-suppression-classique">2.1 Suppression classique</h4>
+<p>Pour la suppression d&#39;un utilisateur classique nous allons utiliser le cmdlet <code>remove-aduser</code> à la suite duquel nous allons spécifier des paramètres.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Remove-ADUser -Identity "NomUtilisateur"</code></pre>
+</div>
+<h3 id="3-recherche-informations-utilisateur">3 Recherche Informations Utilisateur</h3>
+<h4 id="31-recherche-par-nom">3.1 Recherche par nom</h4>
+<p>La première permet de faire ressortir les informations utilisateur à partir directement d&#39;un <code>SamAccountName</code>. Ici donc de rcorsyn. A l&#39;aide du cmdlet <code>Get-ADUser</code>.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-ADUser -Filter "SamAccountName -eq 'rcorsyn'"</code></pre>
+</div>
+<p>Il est aussi possible de faire directement cette commande pour avoir le même résultat.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-ADUser rcorsyn</code></pre>
+</div>
+<p>Enfin, il est aussi possible de lancer cette recherche en précisant de façon précise le serveur et le domaine.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-ADUser -Filter "SamAccountName -eq 'rcorsyn'" -Server SRV-ADDS-01.domcor.lan</code></pre>
+</div>
+<h4 id="32-informations-mails">3.2 Informations mails</h4>
+<h5 id="321-recuperation-mail-dun-utilisateur">3.2.1 Récupération mail d&#39;un utilisateur</h5>
+<p>La commande permet de récupérer l&#39;adresse e-mail de l&#39;utilisateur rcorsyn et de la formater en tableau à l&#39;aide des cmdlets <code>Get-ADUser</code> et <code>Format-Table</code> avec la propriété <code>EmailAddress</code>.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-ADUser rcorsyn -Properties EmailAddress | Format-Table EmailAddress</code></pre>
+</div>
+<h5 id="322-mails-a-partir-dune-ou">3.2.2 Mails à partir d&#39;une OU</h5>
+<p>Cette commande permet d&#39;obtenir la liste des adresses mail des utilisateurs de l&#39;OU DSI. La commande <code>Format-Table</code> permet de faire un tableau avec ici 2 colonnes à savoir <code>Name</code> et <code>EmailAdress</code>.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-ADUser -Filter * -SearchBase "OU=DSI,OU=Personnel,DC=domcor,DC=LAN" -Properties EmailAddress | Format-Table Name,EmailAddress</code></pre>
+</div>
+<h4 id="33-date-de-creation-dun-compte">3.3 Date de création d&#39;un compte</h4>
+<p>La commande permet de récupérer le nom et la date de création de l&#39;utilisateur rcorsyn en utilisant le cmdlet <code>Get-ADUser</code> avec la propriété <code>WhenCreated</code>, puis de sélectionner et d&#39;afficher uniquement les colonnes <code>Name</code> et <code>WhenCreated</code>.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-ADUser rcorsyn -Properties WhenCreated | Select-Object Name, WhenCreated</code></pre>
+</div>
+<h4 id="34-groupe-et-ou-dun-utilisateur">3.4 Groupe et OU d&#39;un utilisateur</h4>
+<p>La commande permet de récupérer tous les groupes et OU auxquels appartient l&#39;utilisateur rcorsyn en utilisant le cmdlet <code>Get-ADUser</code> avec la propriété <code>MemberOf</code>. La commande <code>Select-Object</code> avec l&#39;option <code>-ExpandProperty MemberOf</code> affiche les noms des groupes directement.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-ADUser -Identity rcorsyn -Properties memberof | Select-Object memberof -ExpandProperty memberof</code></pre>
+</div>
+<h4 id="35-nombre-dutilisateurs-actifs">3.5 Nombre d&#39;utilisateurs actifs</h4>
+<p>La commande permet de compter le nombre d&#39;utilisateurs activés (<code>Enabled</code>) dans Active Directory en utilisant le cmdlet <code>Get-ADUser</code> avec le filtre <code>{ Enabled -eq $True }</code>, puis en accédant à la propriété <code>Count</code> pour obtenir le nombre total de ces utilisateurs.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">(Get-ADUser -Filter { Enabled -eq $True }).Count</code></pre>
+</div>
+<h4 id="36-liste-utilisateurs-desactive-dans-ad">3.6 Liste utilisateurs désactivé dans AD</h4>
+<p>La commande permet de récupérer les noms et les <code>SamAccountName</code> des utilisateurs désactivés dans Active Directory en utilisant le cmdlet <code>Get-ADUser</code> avec le filtre <code>{ Enabled -eq $False }</code>, puis de formater et d&#39;afficher les résultats en tableau avec les colonnes <code>SamAccountName</code> et <code>Name</code> à l&#39;aide de <code>Format-Table</code>.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-ADUser -Filter { Enabled -eq $False } | Format-Table SamAccountName, Name</code></pre>
+</div>
+<h4 id="37-liste-utilisateurs-inactif-dans-ad">3.7 Liste utilisateurs Inactif dans AD</h4>
+<p>La commande recherche les comptes d&#39;utilisateurs inactifs dans Active Directory depuis les 180 derniers jours en utilisant le cmdlet <code>Search-ADAccount</code> avec les options <code>-UsersOnly</code> pour rechercher uniquement les utilisateurs, <code>-AccountInactive</code> pour trouver les comptes inactifs, et <code>-TimeSpan 180</code> pour spécifier la durée de 180 jours. Ensuite, elle utilise <code>Where-Object</code> pour filtrer les résultats en excluant les comptes qui ont un <code>DistinguishedName</code> correspondant à &quot;CN=Users&quot; (c&#39;est-à-dire les comptes d&#39;utilisateurs standards) et qui sont activés (<code>Enabled</code> est égal à <code>$true</code>). Cela permet de ne récupérer que les comptes d&#39;utilisateurs inactifs qui ne sont pas des comptes d&#39;utilisateurs standard et qui sont activés.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Search-ADaccount -UsersOnly -AccountInactive -Timespan 180 | Where{ ($_.DistinguishedName -notmatch "CN=Users") -and ($_.Enabled -eq $true) }</code></pre>
+</div>
+<h3 id="4-parametrage-utilisateurs">4 Paramétrage Utilisateurs</h3>
+<h4 id="41-parametrage-mots-de-passe">4.1 Paramétrage mots de passe</h4>
+<h5 id="411-modification-mot-de-passe-instantane">4.1.1 Modification mot de passe instantané</h5>
+<p>La commande permet de réinitialiser le mot de passe du compte utilisateur rcorsyn avec un nouveau mot de passe (<code>JzkS!12jsD!$</code>) dans Active Directory en utilisant le cmdlet <code>Set-ADAccountPassword</code> avec l&#39;option <code>-Reset</code>. Le nouveau mot de passe est converti en une chaîne sécurisée à l&#39;aide de <code>ConvertTo-SecureString</code> avec l&#39;option <code>-AsPlainText</code> et <code>-Force</code>.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Set-ADAccountPassword -Identity rcorsyn -Reset -NewPassword (ConvertTo-SecureString -AsPlainText "JzkS!12jsD!$" -Force)</code></pre>
+</div>
+<h5 id="412-reinitialisation-mot-de-passe">4.1.2 Réinitialisation mot de passe</h5>
+<p>La commande permet de réinitialiser le mot de passe du compte utilisateur rcorsyn dans Active Directory en utilisant le cmdlet <code>Set-ADAccountPassword</code> avec l&#39;option <code>-Reset</code>, ce qui force la réinitialisation du mot de passe.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Set-ADAccountPassword -Identity rcorsyn -Reset</code></pre>
+</div>
+<h4 id="42-gestion-des-politiques-de-mot-de-passe-et-des-options-de-compte">4.2 Gestion des Politiques de Mot de Passe et des Options de Compte</h4>
+<p>Voici un tableau présentant différents paramètres de gestion des comptes utilisateur, ainsi que les options correspondantes à utiliser en ligne de commande avec PowerShell :</p>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Commande</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Doit changer le mot de passe à la prochaine Connexion</td>
+<td><code>-ChangePasswordAtLogon $true</code></td>
+</tr>
+<tr>
+<td>Le mot de passe n&#39;expire jamais</td>
+<td><code>-PasswordNeverExpires $true</code></td>
+</tr>
+<tr>
+<td>Activation du compte</td>
+<td><code>-Enabled $true</code></td>
+</tr>
+<tr>
+<td>Désactivation du compte</td>
+<td><code>-Enabled $false</code></td>
+</tr>
+<tr>
+<td>Verrouillage du compte</td>
+<td><code>-AccountLockout $true</code></td>
+</tr>
+<tr>
+<td>Déverrouillage du compte</td>
+<td><code>Unlock-ADAccount</code></td>
+</tr>
+</tbody></table>
+<p>Exemple de commande qui utilise <code>-ChangePasswordAtLogon $true</code> :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Set-ADUser -Identity rcorsyn -ChangePasswordAtLogon $true</code></pre>
+</div>
+<h4 id="43-gestion-information-utilisateur-classique">4.3 Gestion information utilisateur classique</h4>
+<p>Voici un tableau présentant différents paramètres de gestion des informations utilisateur classiques, ainsi que les options correspondantes à utiliser en ligne de commande avec PowerShell :</p>
+<table>
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Commande</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Nom</td>
+<td><code>-Surname</code></td>
+</tr>
+<tr>
+<td>Prénom</td>
+<td><code>-GivenName</code></td>
+</tr>
+<tr>
+<td>Nom Complet</td>
+<td><code>-Name</code></td>
+</tr>
+<tr>
+<td>Nom d&#39;Affichage</td>
+<td><code>-DisplayName</code></td>
+</tr>
+<tr>
+<td>Description</td>
+<td><code>-Description</code></td>
+</tr>
+<tr>
+<td>Adresse e-mail</td>
+<td><code>-EmailAddress</code></td>
+</tr>
+<tr>
+<td>Nom (SamAccountName)</td>
+<td><code>-SamAccountName</code></td>
+</tr>
+<tr>
+<td>Groupe Principal</td>
+<td><code>-UserPrincipalName</code></td>
+</tr>
+<tr>
+<td>Téléphone</td>
+<td><code>-OfficePhone</code></td>
+</tr>
+<tr>
+<td>Adresse</td>
+<td><code>-StreetAddress</code>, <code>-City</code>, <code>-State</code>, <code>-PostalCode</code>, <code>-Country</code></td>
+</tr>
+<tr>
+<td>Département affilié</td>
+<td><code>-Department</code></td>
+</tr>
+</tbody></table>
+<p>Voici un exemple concret d&#39;utilisation pour définir l&#39;adresse e-mail d&#39;un utilisateur :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Set-ADUser -Identity "rcorsyn" -EmailAddress "adresse.email@example.com"</code></pre>
+</div>
+<h4 id="44-gestion-des-groupes-utilisateurs">4.4 Gestion des Groupes Utilisateurs</h4>
+<h5 id="441-ajouter-un-utilisateur-a-un-groupe">4.4.1 Ajouter un Utilisateur à un Groupe</h5>
+<p>Pour ajouter un utilisateur à un groupe il faudra simplement utiliser le cmdlet <code>Add-AdGroupMember</code> et puis spécifier le groupe puis l&#39;utilisateur.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Add-AdGroupMember -Identity gr_BTS -Members "avasque"</code></pre>
+</div>
+<h5 id="442-supprimer-un-utilisateur-a-un-groupe">4.4.2 Supprimer un Utilisateur à un Groupe</h5>
+<p>Pour supprimer un groupe à un utilisateur il faudra maintenant utiliser le cmdlet <code>Remove-AdGroupMember</code> et puis spécifier le groupe et l&#39;utilisateur.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Remove-AdGroupMember -Identity gr_BTS -Members avasque -Confirm:$false</code></pre>
+</div>
+
+          </article>
+
+          <div class="proc-author">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            <span class="proc-author-label">Auteur</span>
+            <span class="proc-author-sep">·</span>
+            <span class="proc-author-name">Panariello Matteo</span>
+          </div>
+
+          <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--color-border)">
+            <a href="../powershell/active-directory.html" class="back-link" style="margin:0;padding:8px 16px;background-color:var(--color-bg-secondary);border-radius:8px">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              Retour aux procédures
+            </a>
+          </div>
+        </div>
+
+        <aside class="toc-wrap">
+          <div class="toc-sticky">
+            <div class="toc-box">
+              <h4 class="toc-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                Sommaire
+              </h4>
+              <nav>
+                <ul class="toc-list">
+                  <li><a href="#i-utilisateurs" class="toc-link" data-id="i-utilisateurs">I/ Utilisateurs</a></li>
+                  <li><a href="#1-creation-utilisateurs" class="toc-link depth-3" data-id="1-creation-utilisateurs">1 Création Utilisateurs</a></li>
+                  <li><a href="#2-suppression-utilisateurs" class="toc-link depth-3" data-id="2-suppression-utilisateurs">2 Suppression Utilisateurs</a></li>
+                  <li><a href="#3-recherche-informations-utilisateur" class="toc-link depth-3" data-id="3-recherche-informations-utilisateur">3 Recherche Informations Utilisateur</a></li>
+                  <li><a href="#4-parametrage-utilisateurs" class="toc-link depth-3" data-id="4-parametrage-utilisateurs">4 Paramétrage Utilisateurs</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

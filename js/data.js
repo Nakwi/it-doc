@@ -169,5 +169,14 @@ window.__PROCEDURES__ = [
     level: "Débutant", duration: 30,
     tags: ["PowerShell", "Windows", "Cmdlets", "Pipeline", "Scripting"],
     cover: "images/powershellfondamentaux_cover.png"
+  },
+  {
+    id: 'administration-utilisateurs-active-directory',
+    title: "Administration des utilisateurs Active Directory en PowerShell",
+    category: 'powershell', categoryLabel: "PowerShell",
+    subcategory: 'active-directory', subcategoryLabel: "Active Directory",
+    level: "Intermédiaire", duration: 50,
+    tags: ["PowerShell", "Active Directory", "Utilisateurs", "Windows Server"],
+    cover: "images/powershellusers_cover.png"
   }
 ];

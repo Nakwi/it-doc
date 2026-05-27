@@ -1,4 +1,15 @@
-# Administration Utilisateur Active Directory
+---
+title: "Administration des utilisateurs Active Directory en PowerShell"
+category: powershell
+subcategory: active-directory
+level: Intermédiaire
+duration: 50
+tags: ["PowerShell", "Active Directory", "Utilisateurs", "Windows Server"]
+cover: images/powershellusers_cover.png
+author: "Panariello Matteo"
+---
+
+# Administration des utilisateurs Active Directory en PowerShell
 
 ## Sommaire
 

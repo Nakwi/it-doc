@@ -95,7 +95,7 @@
       gap: 24px;
     }
     @media (min-width: 640px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 1024px) { .team-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (min-width: 1024px) { .team-grid { grid-template-columns: repeat(5, 1fr); } }
     .member {
       background-color: var(--color-bg-primary);
       border: 1px solid var(--color-border);
@@ -191,6 +191,25 @@
     }
     .submit-btn:hover { background-color: #006abc; }
     .submit-btn svg { width: 20px; height: 20px; }
+
+    .contact-mail {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      background-color: #0078D4;
+      color: white;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: background-color 0.2s, transform 0.2s;
+      text-decoration: none;
+    }
+    .contact-mail:hover { background-color: #006abc; transform: translateY(-1px); }
+    .contact-mail svg { width: 20px; height: 20px; }
+    .contact-box { text-align: center; }
+    .contact-box > h2, .contact-box > p { text-align: center; }
   </style>
   <script>
     if (localStorage.getItem('theme') === 'dark' ||
@@ -278,6 +297,11 @@
             <h3>Angelo Vazquez</h3>
             <p>Étude Infra Réseau Cloud</p>
           </div>
+          <div class="member">
+            <div class="avatar" style="background: linear-gradient(135deg, #E63946, #E63946dd)">DI</div>
+            <h3>Idrissa Diagana</h3>
+            <p>Étude Infra Réseau Cloud</p>
+          </div>
         </div>
       </div>
 
@@ -285,26 +309,12 @@
         <h2>Une suggestion ?</h2>
         <p>
           Vous avez repéré une erreur ou souhaitez proposer une nouvelle procédure ?<br/>
-          Envoyez-nous un message !
+          Contactez-nous par mail :
         </p>
-        <form action="https://formspree.io/f/VOTRE_ID" method="POST" class="contact-form">
-          <div class="field">
-            <label for="name">Nom</label>
-            <input type="text" id="name" name="name" required placeholder="Votre nom" />
-          </div>
-          <div class="field">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required placeholder="votre@email.com" />
-          </div>
-          <div class="field">
-            <label for="message">Message</label>
-            <textarea id="message" name="message" rows="4" required placeholder="Votre suggestion ou message..."></textarea>
-          </div>
-          <button type="submit" class="submit-btn">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-            Envoyer
-          </button>
-        </form>
+        <a href="mailto:contact@it-doc.fr" class="contact-mail">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          contact@it-doc.fr
+        </a>
       </div>
 
     </div>

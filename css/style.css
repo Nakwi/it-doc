@@ -246,12 +246,17 @@ html.dark .theme-toggle .icon-moon { display: none; }
   font-weight: 500;
 }
 .sidebar-sub-item .count { font-size: 0.75rem; color: var(--color-text-secondary); }
-.sidebar-footer {
-  padding: 12px 16px;
-  border-top: 1px solid var(--color-border);
-  text-align: center;
-  font-size: 0.75rem;
+.site-version {
+  position: fixed;
+  bottom: 12px;
+  left: 16px;
+  z-index: 40;
+  font-size: 0.7rem;
   color: var(--color-text-secondary);
+  opacity: 0.6;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
 }
 
 .main {
@@ -955,6 +960,37 @@ html.dark .prose code:not(pre code) { color: #60a5fa; }
 
 /* Reset prose li::before inside code blocks */
 .prose .code-block li::before { display: none; }
+
+/* ============ AUTHOR LINE (bottom of procedure) ============ */
+.proc-author {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 40px;
+  padding: 14px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+.proc-author svg {
+  width: 14px;
+  height: 14px;
+  color: #0078D4;
+}
+.proc-author-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.proc-author-sep { opacity: 0.4; }
+.proc-author-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 1023px) {

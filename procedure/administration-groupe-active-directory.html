@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administration des groupes Active Directory en PowerShell | IT-DOC</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="../" data-current-path="/powershell/active-directory">
+
+  <main data-content>
+    <div class="container">
+      <div class="proc-layout">
+        <div class="proc-main">
+          <a href="../powershell/active-directory.html" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Retour
+          </a>
+
+          <nav class="breadcrumb">
+            <a href="../index.html">Accueil</a>
+            <span class="sep">/</span>
+            <a href="../powershell.html">PowerShell</a>
+            <span class="sep">/</span>
+            <a href="../powershell/active-directory.html">Active Directory</a>
+            <span class="sep">/</span>
+            <span class="current">Administration des groupes Active Directory en PowerShell</span>
+          </nav>
+
+          <div class="proc-header">
+            <h1>Administration des groupes Active Directory en PowerShell</h1>
+            <div class="proc-meta">
+              <span class="badge badge-intermediaire">Intermédiaire</span>
+              <span class="meta-duration">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                25 minutes
+              </span>
+            <a href="../tags.html?tag=PowerShell" class="tag">PowerShell</a>
+            <a href="../tags.html?tag=Active%20Directory" class="tag">Active Directory</a>
+            <a href="../tags.html?tag=Groupes" class="tag">Groupes</a>
+            <a href="../tags.html?tag=Windows%20Server" class="tag">Windows Server</a>
+            </div>
+          </div>
+
+          <article class="prose">
+<h2 id="i-groupe">I/ Groupe</h2>
+<h3 id="1-creer-et-supprimer-un-groupe">1 Créer et Supprimer un groupe</h3>
+<h4 id="11-creation-dun-groupe">1.1 Création d&#39;un groupe</h4>
+<p>Pour créer un groupe dans AD il faudra utiliser le cmdlet <code>New-ADGroup</code>. Et puis spécifier les paramètre suivant :</p>
+<ul>
+<li><code>Name</code> = Nom du groupe</li>
+<li><code>Path</code> = L&#39;OU dans laquelle on souhaite créer ce groupe</li>
+<li><code>GroupScope</code> = L&#39;étendue du groupe (domaine local / globale / universelle)</li>
+<li><code>Description</code> = La description de votre groupe</li>
+</ul>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">New-ADGroup -Name "gr_SLAM" -Path "OU=BTS SIO SLAM,OU=ETUDIANTS,DC=DOMCOR,DC=LAN" -GroupScope Global -Description "BTS slam"</code></pre>
+</div>
+<h4 id="12-supprimer-un-groupe">1.2 Supprimer un groupe</h4>
+<p>Pour maintenant supprimer un groupe, il faudra utiliser le cmdlet <code>Remove-ADGroup</code>. Et simplement spécifier son nom, et si vous voulez passer l&#39;étape de confirmation utiliser <code>-Confirm:$false</code>.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Remove-ADGroup -Identity "gr_slam2" -Confirm:$false</code></pre>
+</div>
+<h3 id="2-modification-dun-groupe">2 Modification d&#39;un groupe</h3>
+<h4 id="21-renommage-dun-groupe">2.1 Renommage d&#39;un groupe</h4>
+<p>Pour renommer un groupe vous devez utiliser le cmdlet <code>Rename-ADObject</code>. Puis spécifier le nom actuel <code>gr_SLAM</code> et le <code>-NewName</code> <code>gr_SLAM2</code>. La commande changera automatiquement le <code>DisplayName</code> et le <code>SamAccountName</code>.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Rename-ADObject -Identity "gr_SLAM" -NewName "gr_SLAM2"</code></pre>
+</div>
+<h4 id="22-modification-de-la-description">2.2 Modification de la description</h4>
+<p>Pour la modification de la description utiliser le cmdlet <code>Set-ADGroup</code> et spécifier le groupe et la nouvelle description.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Set-ADGroup -Identity "gr_BTS" -Description "Groupe avec les membres du BTS SIO SISR"</code></pre>
+</div>
+<h4 id="23-changement-du-type-de-groupe-et-etendue">2.3 Changement du type de groupe et étendue</h4>
+<p>Nous allons dans un premier temps définir les différents types de groupes qu&#39;il existe, puis les différentes étendues.</p>
+<table>
+<thead>
+<tr>
+<th>Etendue de groupe</th>
+<th>Type de groupe</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Domaine local</td>
+<td>Sécurité</td>
+</tr>
+<tr>
+<td>Globale</td>
+<td>Distribution</td>
+</tr>
+<tr>
+<td>Universelle</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<h5 id="231-modification-type-de-groupe">2.3.1 Modification Type de groupe</h5>
+<p>Vous utiliserez le cmdlet <code>Set-ADGroup</code>. Puis la commande <code>-GroupCategory</code> et choisir entre <code>Security</code> ou bien <code>Distribution</code>.</p>
+<p>En voici un exemple :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Set-ADGroup -Identity "Étudiants" -GroupCategory Distribution</code></pre>
+</div>
+<h5 id="232-modification-etendue">2.3.2 Modification étendue</h5>
+<p>Maintenant pour l&#39;étendue vous utiliserez aussi le cmdlet <code>Set-ADGroup</code>. Puis la commande <code>-GroupScope</code> et choisir entre Domaine local, Global, Universelle.</p>
+<blockquote>
+<p><strong>Attention :</strong> Un groupe d&#39;étendue « Globale » ne peut pas être modifié en groupe d&#39;étendue « Domaine local » (il faut d&#39;abord le mettre en étendue universelle, ce qui va nécessiter d&#39;utiliser deux commandes).</p>
+</blockquote>
+<p>Voici un exemple :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Set-ADGroup -Identity "Mailing" -GroupScope Universal</code></pre>
+</div>
+<h3 id="3-recuperation-information-dun-groupe">3 Récupération information d&#39;un groupe</h3>
+<h4 id="31-recuperation-propriete-dun-groupe">3.1 Récupération propriété d&#39;un groupe</h4>
+<p>La commande qui permet d&#39;obtenir les informations d&#39;un groupe spécifique dans Active Directory en utilise pour ce faire, le cmdlet <code>Get-ADGroup</code> avec le paramètre <code>-Identity</code> suivi du nom du groupe.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-ADGroup -Identity "gr_BTS"</code></pre>
+</div>
+<p>Il est possible d&#39;affiner les propriété afficher à l&#39;aide de <code>-Properties</code> pour préciser les propriétés additionnelles à afficher comme <code>Description</code>, <code>Members</code>.</p>
+<h4 id="32-recuperation-membres-dun-groupe">3.2 Récupération membres d&#39;un groupe</h4>
+<p>La commande pour obtenir la liste des membres d&#39;un groupe spécifique, utilise le cmdlet <code>Get-ADGroupMember</code> pour récupérer les membres du groupe, puis pipe les résultats à <code>Format-Table</code> pour afficher uniquement les colonnes <code>Name</code> et <code>DistinguishedName</code>.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-ADGroupMember -Identity "gr_BTS" | Format-Table Name, DistinguishedName</code></pre>
+</div>
+<h4 id="33-compter-le-nombre-dutilisateurs-dun-groupe">3.3 Compter le nombre d&#39;utilisateurs d&#39;un groupe</h4>
+<p>Pour compter le nombre de membres d&#39;un groupe spécifique, il faut utiliser le cmdlet <code>Get-ADGroupMember</code> pour récupérer les membres du groupe, puis accéder à la propriété <code>Count</code> pour obtenir le nombre total de membres du groupe.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">(Get-ADGroupMember -Identity "gr_BTS").Count</code></pre>
+</div>
+<h4 id="34-recuperation-des-groupes-vides">3.4 Récupération des groupes vides</h4>
+<p>La commande utilise le cmdlet <code>Get-ADGroup</code> pour récupérer tous les groupes Active Directory, en incluant les propriétés des membres. Ensuite, elle utilise le pipeline (<code>|</code>) pour passer les résultats à la commande <code>Where-Object</code>, qui filtre les groupes pour ne conserver que ceux qui n&#39;ont pas de membres à l&#39;aide de <code>{ -not $_.members}</code>. Enfin, elle utilise <code>Select-Object</code> pour sélectionner uniquement le nom de ces groupes. Ainsi, la commande retourne une liste des noms des groupes Active Directory qui ne contiennent aucun membre.</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-ADGroup -Filter * -Properties Members | Where-Object { -not $_.members} | Select-Object Name</code></pre>
+</div>
+
+          </article>
+
+          <div class="proc-author">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            <span class="proc-author-label">Auteur</span>
+            <span class="proc-author-sep">·</span>
+            <span class="proc-author-name">Panariello Matteo</span>
+          </div>
+
+          <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--color-border)">
+            <a href="../powershell/active-directory.html" class="back-link" style="margin:0;padding:8px 16px;background-color:var(--color-bg-secondary);border-radius:8px">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              Retour aux procédures
+            </a>
+          </div>
+        </div>
+
+        <aside class="toc-wrap">
+          <div class="toc-sticky">
+            <div class="toc-box">
+              <h4 class="toc-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                Sommaire
+              </h4>
+              <nav>
+                <ul class="toc-list">
+                  <li><a href="#i-groupe" class="toc-link" data-id="i-groupe">I/ Groupe</a></li>
+                  <li><a href="#1-creer-et-supprimer-un-groupe" class="toc-link depth-3" data-id="1-creer-et-supprimer-un-groupe">1 Créer et Supprimer un groupe</a></li>
+                  <li><a href="#2-modification-dun-groupe" class="toc-link depth-3" data-id="2-modification-dun-groupe">2 Modification d'un groupe</a></li>
+                  <li><a href="#3-recuperation-information-dun-groupe" class="toc-link depth-3" data-id="3-recuperation-information-dun-groupe">3 Récupération information d'un groupe</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

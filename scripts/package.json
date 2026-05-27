@@ -1,0 +1,13 @@
+{
+  "name": "it-doc-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Outils internes IT-DOC : conversion .md -> procedure HTML + patch data.js",
+  "scripts": {
+    "convert": "node convert.mjs"
+  },
+  "dependencies": {
+    "marked": "^18.0.4"
+  }
+}

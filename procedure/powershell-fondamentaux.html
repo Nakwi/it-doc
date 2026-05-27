@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction et fondamentaux de PowerShell | IT-DOC</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <script>
+    if (localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body data-base="../" data-current-path="/powershell/active-directory">
+
+  <main data-content>
+    <div class="container">
+      <div class="proc-layout">
+        <div class="proc-main">
+          <a href="../powershell/active-directory.html" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Retour
+          </a>
+
+          <nav class="breadcrumb">
+            <a href="../index.html">Accueil</a>
+            <span class="sep">/</span>
+            <a href="../powershell.html">PowerShell</a>
+            <span class="sep">/</span>
+            <a href="../powershell/active-directory.html">Active Directory</a>
+            <span class="sep">/</span>
+            <span class="current">Introduction et fondamentaux de PowerShell</span>
+          </nav>
+
+          <div class="proc-header">
+            <h1>Introduction et fondamentaux de PowerShell</h1>
+            <div class="proc-meta">
+              <span class="badge badge-debutant">Débutant</span>
+              <span class="meta-duration">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                30 minutes
+              </span>
+            <a href="../tags.html?tag=PowerShell" class="tag">PowerShell</a>
+            <a href="../tags.html?tag=Windows" class="tag">Windows</a>
+            <a href="../tags.html?tag=Cmdlets" class="tag">Cmdlets</a>
+            <a href="../tags.html?tag=Pipeline" class="tag">Pipeline</a>
+            <a href="../tags.html?tag=Scripting" class="tag">Scripting</a>
+            </div>
+          </div>
+
+          <article class="prose">
+<h2 id="introduction">Introduction</h2>
+<h3 id="1-powershell">1 PowerShell</h3>
+<p>PowerShell est un puissant langage de script et une interface en ligne de commande développé par Microsoft. Il a été initialement introduit en 2006 pour les administrateurs système afin de simplifier et d&#39;automatiser les tâches de gestion dans les environnements Windows.</p>
+<p>Contrairement à l&#39;ancienne interface en ligne de commande (CLI) de Windows, PowerShell est basé sur le framework .NET, ce qui lui confère une grande flexibilité et une capacité à interagir avec un large éventail de services et de technologies Microsoft.</p>
+<h3 id="2-pourquoi-utiliser-powershell-pour-administrer-un-systeme">2 Pourquoi utiliser PowerShell pour administrer un système</h3>
+<p>PowerShell offre de nombreux avantages pour l&#39;administration système :</p>
+<ul>
+<li><strong>Automatisation</strong> : il permet d&#39;automatiser des tâches répétitives et complexes, ce qui permet de gagner du temps et d&#39;améliorer l&#39;efficacité opérationnelle.</li>
+<li><strong>Gestion centralisée</strong> : PowerShell peut gérer à la fois des tâches locales et des tâches sur des systèmes distants, offrant ainsi une gestion centralisée des infrastructures.</li>
+<li><strong>Interopérabilité</strong> : il peut interagir avec un large éventail de technologies Microsoft telles que Active Directory, Exchange, SharePoint, etc., ainsi qu&#39;avec des services tiers via des API.</li>
+<li><strong>Scripting avancé</strong> : PowerShell est un langage de script complet avec des structures de contrôle, des fonctions, des modules, des variables, et plus encore, ce qui le rend adapté aux besoins les plus avancés des administrateurs système.</li>
+</ul>
+<h3 id="3-historique-et-evolution-de-powershell">3 Historique et évolution de PowerShell</h3>
+<p>Depuis sa première version, PowerShell a connu plusieurs itérations majeures, chaque nouvelle version apportant des fonctionnalités améliorées et des améliorations de performances. Voici un bref aperçu de l&#39;évolution de PowerShell :</p>
+<ul>
+<li><strong>PowerShell 1.0</strong> : lancé en 2006, il introduit le langage de script PowerShell basé sur .NET.</li>
+<li><strong>PowerShell 2.0</strong> : intégré à Windows 7 et Windows Server 2008 R2, il apporte de nouvelles fonctionnalités telles que les modules, l&#39;extension de l&#39;API WMI, etc.</li>
+<li><strong>PowerShell 3.0</strong> : lancé en 2012, il inclut des améliorations majeures telles que Workflow, Remote Scripting, etc.</li>
+<li><strong>PowerShell 4.0 et 5.0</strong> : introduisent des fonctionnalités avancées telles que Desired State Configuration (DSC), PowerShell Gallery, etc.</li>
+<li><strong>PowerShell 7.x</strong> : version multiplateforme compatible avec Windows, macOS et Linux, offrant une compatibilité accrue avec les environnements cloud et hybrides.</li>
+</ul>
+<p>PowerShell continue d&#39;évoluer avec de nouvelles versions et fonctionnalités, en restant un outil essentiel pour les administrateurs système modernes.</p>
+<h2 id="fondamentaux-de-powershell">Fondamentaux de PowerShell</h2>
+<p>PowerShell repose sur une syntaxe et des concepts particuliers qui sont essentiels pour bien comprendre et utiliser efficacement cet outil d&#39;administration système. Cette section couvrira les aspects fondamentaux de PowerShell, y compris sa syntaxe de base, les commandes essentielles et la gestion des variables, et ses opérateurs de comparaison.</p>
+<h3 id="1-syntaxe-de-base">1 Syntaxe de base</h3>
+<h4 id="11-cmdlets">1.1 Cmdlets</h4>
+<p>Les cmdlets sont les éléments fondamentaux de PowerShell. Ils suivent un format standard <strong>Verbe-Nom</strong> (par exemple <code>Get-Process</code>, <code>Set-Item</code>, <code>Remove-Item</code>).</p>
+<ul>
+<li><strong>Verbe</strong> : il indique l&#39;action à effectuer (comme <code>Get</code> pour obtenir des informations, <code>Set</code> pour définir des valeurs, <code>Remove</code> pour supprimer des éléments, etc.).</li>
+<li><strong>Nom</strong> : il spécifie l&#39;objet sur lequel l&#39;action doit être effectuée (comme <code>Process</code> pour les processus, <code>Item</code> pour les éléments, <code>Service</code> pour les services, etc.).</li>
+</ul>
+<p>Exemples de cmdlets courants :</p>
+<ul>
+<li><code>Get-Process</code> : récupère des informations sur les processus en cours d&#39;exécution.</li>
+<li><code>Get-Service</code> : obtient des informations sur les services du système.</li>
+<li><code>New-Item</code> : crée un nouvel élément (fichier, dossier, registre, etc.).</li>
+<li><code>Set-ItemProperty</code> : définit les propriétés d&#39;un élément.</li>
+<li><code>Remove-Item</code> : supprime un élément.</li>
+</ul>
+<h4 id="12-pipeline">1.2 Pipeline</h4>
+<p>Le pipeline (<code>|</code>) permet de chaîner des <strong>cmdlets</strong> ensemble en transmettant la sortie d&#39;une commande comme entrée à une autre. Cela permet de construire des <strong>séquences de commandes</strong> complexes et de manipuler les données de manière fluide.</p>
+<p>Par exemple :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-Service | Where-Object { $_.Status -eq "Running" } | Stop-Service</code></pre>
+</div>
+<p>Dans cet exemple, <code>Get-Service</code> récupère tous les services, <code>Where-Object</code> filtre ceux qui sont en cours d&#39;exécution, puis <code>Stop-Service</code> les arrête.</p>
+<h4 id="13-gestion-des-variables">1.3 Gestion des variables</h4>
+<p>Les variables permettent de <strong>stocker</strong> et de <strong>manipuler</strong> des données dans PowerShell. Elles commencent toujours par le symbole <code>$</code> suivi du nom de la variable.</p>
+<p>Exemple :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">$nom = "Angéleau Vasqueezie"</code></pre>
+</div>
+<p>On peut ensuite utiliser cette variable dans des cmdlets ou des scripts pour référencer la donnée qu&#39;elle contient.</p>
+<h4 id="14-structures-de-controle">1.4 Structures de contrôle</h4>
+<p>PowerShell offre plusieurs structures de contrôle pour gérer le flux d&#39;exécution dans les scripts.</p>
+<h5 id="boucles">Boucles</h5>
+<ul>
+<li><strong>for</strong> : exécute des instructions un nombre spécifié de fois.</li>
+<li><strong>foreach</strong> : parcourt chaque élément dans une collection.</li>
+<li><strong>while</strong> : exécute des instructions tant qu&#39;une condition est vraie.</li>
+</ul>
+<p>Exemple boucle <strong>foreach</strong> :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">$Animaux = "Chat", "Chien", "Poisson"
+foreach ($Animal in $Animaux) {
+    Write-Host "Animal : $Animal"
+}</code></pre>
+</div>
+<p>Ce script va afficher le nom des trois animaux, car il aura parcouru toute la liste.</p>
+<h5 id="instructions-conditionnelles">Instructions conditionnelles</h5>
+<ul>
+<li><strong>if / else</strong> : exécute des instructions en fonction d&#39;une condition.</li>
+<li><strong>switch</strong> : exécute des instructions basées sur la correspondance avec différentes valeurs.</li>
+</ul>
+<p>Exemple d&#39;utilisation de <strong>if</strong> :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">$nombre = 10
+if ($nombre -gt 5) {
+    Write-Host "Le nombre est supérieur à 5."
+} else {
+    Write-Host "Le nombre est inférieur ou égal à 5."
+}</code></pre>
+</div>
+<h4 id="15-operateurs-de-comparaison">1.5 Opérateurs de comparaison</h4>
+<p>Dans PowerShell, les <strong>opérateurs de comparaison</strong> sont utilisés pour effectuer des <strong>comparaisons</strong> entre des valeurs et sont essentiels pour des opérations telles que le <strong>filtrage</strong> et les <strong>conditions</strong>.</p>
+<p>Voici un récapitulatif des opérateurs de comparaison les plus couramment utilisés :</p>
+<table>
+<thead>
+<tr>
+<th align="center">Opérateur</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>-gt</code></td>
+<td align="left">Plus grand que</td>
+</tr>
+<tr>
+<td align="center"><code>-ge</code></td>
+<td align="left">Plus grand ou égal à</td>
+</tr>
+<tr>
+<td align="center"><code>-eq</code></td>
+<td align="left">Égal à</td>
+</tr>
+<tr>
+<td align="center"><code>-ne</code></td>
+<td align="left">Différent de</td>
+</tr>
+<tr>
+<td align="center"><code>-lt</code></td>
+<td align="left">Plus petit que</td>
+</tr>
+<tr>
+<td align="center"><code>-le</code></td>
+<td align="left">Plus petit ou égal à</td>
+</tr>
+</tbody></table>
+<p>Ces opérateurs sont utilisés en corrélation avec d&#39;autres cmdlets pour filtrer des données ou dans des instructions conditionnelles.</p>
+<p>Par exemple :</p>
+<div class="code-block">
+  <div class="code-header">
+    <div class="code-dots"><span></span><span></span><span></span></div>
+    <span class="code-lang">powershell</span>
+    <button class="copy-btn" type="button"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg> Copier</button>
+  </div>
+  <pre><code class="language-powershell">Get-ADDomainController -Filter { name -eq "SRV-1" }</code></pre>
+</div>
+<p>Ici, on utilise l&#39;opérateur <code>-eq</code> pour <strong>filtrer</strong> et que la commande s&#39;effectue seulement sur la machine ayant un nommage <strong>égal à</strong> &quot;SRV-1&quot;.</p>
+
+          </article>
+
+          <div class="proc-author">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            <span class="proc-author-label">Auteur</span>
+            <span class="proc-author-sep">·</span>
+            <span class="proc-author-name">Panariello Matteo</span>
+          </div>
+
+          <div style="margin-top:48px;padding-top:32px;border-top:1px solid var(--color-border)">
+            <a href="../powershell/active-directory.html" class="back-link" style="margin:0;padding:8px 16px;background-color:var(--color-bg-secondary);border-radius:8px">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              Retour aux procédures
+            </a>
+          </div>
+        </div>
+
+        <aside class="toc-wrap">
+          <div class="toc-sticky">
+            <div class="toc-box">
+              <h4 class="toc-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                Sommaire
+              </h4>
+              <nav>
+                <ul class="toc-list">
+                  <li><a href="#introduction" class="toc-link" data-id="introduction">Introduction</a></li>
+                  <li><a href="#1-powershell" class="toc-link depth-3" data-id="1-powershell">1 PowerShell</a></li>
+                  <li><a href="#2-pourquoi-utiliser-powershell-pour-administrer-un-systeme" class="toc-link depth-3" data-id="2-pourquoi-utiliser-powershell-pour-administrer-un-systeme">2 Pourquoi utiliser PowerShell pour administrer un système</a></li>
+                  <li><a href="#3-historique-et-evolution-de-powershell" class="toc-link depth-3" data-id="3-historique-et-evolution-de-powershell">3 Historique et évolution de PowerShell</a></li>
+                  <li><a href="#fondamentaux-de-powershell" class="toc-link" data-id="fondamentaux-de-powershell">Fondamentaux de PowerShell</a></li>
+                  <li><a href="#1-syntaxe-de-base" class="toc-link depth-3" data-id="1-syntaxe-de-base">1 Syntaxe de base</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

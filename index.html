@@ -30,7 +30,7 @@
           <strong>Par des étudiants, pour des étudiants.</strong>
         </p>
         <div class="stats-pills">
-          <div class="stat-pill windows"><strong>5</strong>&nbsp;catégories</div>
+          <div class="stat-pill windows"><strong id="stat-cats">5</strong>&nbsp;catégories</div>
           <div class="stat-pill linux"><strong id="stat-procs">7</strong>&nbsp;procédures</div>
           <div class="stat-pill virt"><strong id="stat-hours">5h</strong>&nbsp;de contenu</div>
         </div>
@@ -81,6 +81,7 @@
     // Stats
     const totalDuration = procs.reduce((s, p) => s + p.duration, 0);
     document.getElementById('hero-count').textContent = procs.length + ' procédures disponibles';
+    document.getElementById('stat-cats').textContent = cats.length;
     document.getElementById('stat-procs').textContent = procs.length;
     document.getElementById('stat-hours').textContent = Math.round(totalDuration / 60) + 'h';
 

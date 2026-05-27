@@ -43,15 +43,29 @@ Hébergé sur une VM, domaine : **it-doc.fr**.
 | reseau | Réseau | #00B4D8 |
 | securite | Sécurité | #E63946 |
 | virtualisation | Virtualisation | #7B2FBE |
+| powershell | PowerShell | #012456 |
 
 Les catégories, sous-catégories et procédures sont définies dans `js/data.js`.
 
 ## Ajouter une Procédure
 
-1. Convertir le `.md` en HTML (cf. `/tmp/md-converter/convert.mjs` qui utilise `marked`)
-2. Déposer le fichier HTML dans `procedure/`
-3. Ajouter l'entrée dans `js/data.js` (objet `__PROCEDURES__`) avec :
-   - `slug`, `title`, `category`, `subcategory`, `level`, `duration`, `tags`, `cover`
+1. Écrire le `.md` dans `procedures-md/<slug>.md` avec frontmatter YAML :
+   ```
+   ---
+   title: "..."
+   category: linux            # doit matcher un id de __CATEGORIES__
+   subcategory: services-reseau
+   level: Débutant|Intermédiaire|Avancé
+   duration: 45               # minutes
+   tags: ["Tag1", "Tag2"]
+   cover: images/<slug>/cover.png
+   ---
+   ```
+2. Déposer les screenshots dans `images/<slug>/` (référencés `/images/<slug>/...` dans le MD)
+3. Lancer `node scripts/convert.mjs` (tous les MD) ou `node scripts/convert.mjs <fichier.md>` (un seul)
+   - Génère `procedure/<slug>.html` avec la DA standard (TOC sticky, code-blocks Tokyo Night, breadcrumb, tags, etc.)
+   - Auto-patch `js/data.js` (insère l'entrée dans `__PROCEDURES__` si le slug n'existe pas)
+4. Tester en local, commit, déployer
 
 ## Fonctionnalités
 

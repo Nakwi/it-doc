@@ -1,22 +1,15 @@
-# Administration Utilisateur Active Directory
+---
+title: "Administration des groupes Active Directory en PowerShell"
+category: powershell
+subcategory: active-directory
+level: Intermédiaire
+duration: 25
+tags: ["PowerShell", "Active Directory", "Groupes", "Windows Server"]
+cover: images/powershellgroupe_cover.png
+author: "Panariello Matteo"
+---
 
-## Sommaire
-
-- [I/ Groupe](#ii-groupe)
-  - [1 Créer et Supprimer un groupe](#1-créer-et-supprimer-un-groupe)
-    - [1.1 Création d'un groupe](#11-création-dun-groupe)
-    - [1.2 Supprimer un groupe](#12-supprimer-un-groupe)
-  - [2 Modification d'un groupe](#2-modification-dun-groupe)
-    - [2.1 Renommage d'un groupe](#21-renommage-dun-groupe)
-    - [2.2 Modification de la description](#22-modification-de-la-description)
-    - [2.3 Changement du type de groupe et étendue](#23-changement-du-type-de-groupe-et-étendue)
-      - [2.3.1 Modification Type de groupe](#231-modification-type-de-groupe)
-      - [2.3.2 Modification étendue](#232-modification-étendue)
-  - [3 Récupération information d'un groupe](#3-récupération-information-dun-groupe)
-    - [3.1 Récupération propriété d'un groupe](#31-récupération-propriété-dun-groupe)
-    - [3.2 Récupération membres d'un groupe](#32-récupération-membres-dun-groupe)
-    - [3.3 Compter le nombre d'utilisateurs d'un groupe](#33-compter-le-nombre-dutilisateurs-dun-groupe)
-    - [3.4 Récupération des groupes vides](#34-récupération-des-groupes-vides)
+# Administration des groupes Active Directory en PowerShell
 
 ## I/ Groupe
 

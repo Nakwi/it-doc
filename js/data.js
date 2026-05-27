@@ -66,6 +66,16 @@ window.__CATEGORIES__ = [
       { id: 'wsl', label: 'WSL' },
       { id: 'proxmox', label: 'Proxmox' }
     ]
+  },
+  {
+    id: 'powershell',
+    label: 'PowerShell',
+    color: '#012456',
+    emoji: '⚡',
+    description: 'Scripting Windows, automatisation et administration en ligne de commande',
+    subcategories: [
+      { id: 'active-directory', label: 'Active Directory' }
+    ]
   }
 ];
 
@@ -141,5 +151,23 @@ window.__PROCEDURES__ = [
     level: 'Intermédiaire', duration: 45,
     tags: ['Technitium', 'DNS', 'DHCP', 'Debian'],
     cover: 'images/technitium/technitium_cover.png'
+  },
+  {
+    id: 'administration-groupe-active-directory',
+    title: "Administration des groupes Active Directory en PowerShell",
+    category: 'powershell', categoryLabel: "PowerShell",
+    subcategory: 'active-directory', subcategoryLabel: "Active Directory",
+    level: "Intermédiaire", duration: 25,
+    tags: ["PowerShell", "Active Directory", "Groupes", "Windows Server"],
+    cover: "images/powershellgroupe_cover.png"
+  },
+  {
+    id: 'powershell-fondamentaux',
+    title: "Introduction et fondamentaux de PowerShell",
+    category: 'powershell', categoryLabel: "PowerShell",
+    subcategory: 'active-directory', subcategoryLabel: "Active Directory",
+    level: "Débutant", duration: 30,
+    tags: ["PowerShell", "Windows", "Cmdlets", "Pipeline", "Scripting"],
+    cover: "images/powershellfondamentaux_cover.png"
   }
 ];

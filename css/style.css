@@ -77,13 +77,8 @@ ul, ol { list-style: none; }
 }
 .logo-mark {
   width: 32px;
-  height: 32px;
-  background-color: #0078D4;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
+  height: auto;
+  display: block;
 }
 .logo-text {
   font-family: var(--font-display);
